@@ -1,13 +1,8 @@
-#include "X-Settlers.h"
-
+#include <SDL.h>
 #include "Core/Log.h"
 #include "Core/Window.h"
 #include "Renderer/Renderer2D.h"
 #include "Renderer/RenderCommand.h"
-
-
-
-#include <SDL.h>
 
 // There needs to be a X-Settlers class later on to manage closing events, game states, menues, etc...
 class XSettlers;
@@ -50,5 +45,5 @@ int main(int argc, char** argv) {
 
 	Renderer2D::Shutdown();
 
-	return 0;
+	return EXIT_SUCCESS;
 }

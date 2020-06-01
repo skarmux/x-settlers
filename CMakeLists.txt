@@ -2,41 +2,67 @@ cmake_minimum_required(VERSION 3.10)
 
 # set the project name
 project(X-Settlers VERSION 0.1)
-
-# specify the C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # add source files
 file(GLOB_RECURSE SOURCE_FILES
-	"${CMAKE_SOURCE_DIR}/src/*.c"
-	"${CMAKE_SOURCE_DIR}/src/*.cpp"
-	"${CMAKE_SOURCE_DIR}/src/*.h"
-	"${CMAKE_SOURCE_DIR}/src/*.hpp")
+	"src/*.c"
+	"src/*.cpp"
+	"src/*.h"
+	"src/*.hpp"
+)
 
-link_directories(
-	"${CMAKE_SOURCE_DIR}/thirdparty/SDL2/lib/x64")
-
-include_directories(
+# Main executable
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+target_include_directories(${PROJECT_NAME} PRIVATE
 	"${CMAKE_SOURCE_DIR}/src"
-	"${CMAKE_SOURCE_DIR}/thirdparty/SDL2/include"
 	"${CMAKE_SOURCE_DIR}/thirdparty/glm"
-	"${CMAKE_SOURCE_DIR}/thirdparty/glad/include"
 	"${CMAKE_SOURCE_DIR}/thirdparty/spdlog/include"
-	"${CMAKE_SOURCE_DIR}/thirdparty/stb")
-
-# dependencies
-find_package(OpenGL REQUIRED)
-find_package(Vulkan REQUIRED)
-
+	"${CMAKE_SOURCE_DIR}/thirdparty/stb"
+)
 if(WIN32)
-	set(LIBS SDL opengl32 GLAD)
-elseif(UNIX)
-	set(LIBS SDL GL GLAD X11 Xrandr Xi dl pthread)
+	target_link_libraries(${PROJECT_NAME} mingw32) # Must be before SDL
 endif()
 
-#add_executable("${PROJECT_NAME}" "X-Settlers.cpp")
-	
+# Platform
+set(PLATFORM_DEFAULT "Desktop")
+set(PLATFORM_TYPES "Desktop" "Android")
+set(PLATFORM ${PLATFORM_DEFAULT} CACHE STRING "Project platform, default: ${PLATFORM_DEFAULT}")
+set_property(CACHE PLATFORM PROPERTY STRINGS ${PLATFORM_TYPES})
+# TODO: make actual use of it
+
+# SDL - assume that user has it installed in OS
+find_package(SDL2 REQUIRED)
+include_directories(${SDL2_INCLUDE_DIRS})
+target_link_libraries(
+	${PROJECT_NAME} SDL2::SDL2main SDL2::SDL2-static
+)
+
+# Renderer
+set(RENDERER_DEFAULT "OpenGL")
+set(RENDERER_TYPES "OpenGL" "Vulkan")
+set(RENDERER ${RENDERER_DEFAULT} CACHE STRING "Project renderer, default: ${RENDERER_DEFAULT}")
+set_property(CACHE RENDERER PROPERTY STRINGS ${RENDERER_TYPES})
+
+message(STATUS "Using '${RENDERER}' renderer")
+if(RENDERER MATCHES Vulkan)
+	find_package(Vulkan REQUIRED)
+	# TODO: target_link_libraries(something)
+	target_compile_definitions(${PROJECT_NAME} PRIVATE RENDERER=Vulkan)
+elseif(RENDERER MATCHES OpenGL)
+	find_package(OpenGL REQUIRED)
+	add_subdirectory("thirdparty/glad")
+	target_link_libraries(${PROJECT_NAME} glad)
+	target_compile_definitions(${PROJECT_NAME} PRIVATE RENDERER=OpenGL)
+else()
+	message(FATAL_ERROR "Couldn't deduce renderer! Please install OpenGL or Vulkan")
+endif()
+
+if(UNIX)
+	set(LIBS GL X11 Xrandr Xi dl pthread)
+endif()
+
 # Create virtual folders to make it look nicer in VS
 if(MSVC_IDE)
 	# Macro to preserve source files hierarchy in the IDE
