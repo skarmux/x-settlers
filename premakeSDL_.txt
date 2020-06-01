@@ -1,0 +1,55 @@
+project "SDL2"
+	kind "None"
+	location "thirdparty/SDL2"
+	language "C"
+	targetdir ("bin/" .. outputdir .. "/{%prj.name}")
+	objdir ("obj/" .. outputdir .. "/{%prj.name}")
+	defines "GL_GLEXT_PROTOTYPES"
+	files {
+		"%{prj.location}/src/*.c",
+		"%{prj.location}/src/audio/*.c",
+		"%{prj.location}/src/audio/android/*.c",
+		"%{prj.location}/src/audio/dummy/*.c",
+		"%{prj.location}/src/audio/openslES/*.c",
+		"%{prj.location}/src/atomic/SDL_atomic.c.arm",
+		"%{prj.location}/src/atomic/SDL_spinlock.c.arm",
+		"%{prj.location}/src/core/android/*.c",
+		"%{prj.location}/src/cpuinfo/*.c",
+		"%{prj.location}/src/dynapi/*.c",
+		"%{prj.location}/src/events/*.c",
+		"%{prj.location}/src/file/*.c",
+		"%{prj.location}/src/haptic/*.c",
+		"%{prj.location}/src/haptic/android/*.c",
+		"%{prj.location}/src/joystick/*.c",
+		"%{prj.location}/src/joystick/android/*.c",
+		"%{prj.location}/src/joystick/hidapi/*.c",
+		"%{prj.location}/src/loadso/dlopen/*.c",
+		"%{prj.location}/src/power/*.c",
+		"%{prj.location}/src/power/android/*.c",
+		"%{prj.location}/src/filesystem/android/*.c",
+		"%{prj.location}/src/sensor/*.c",
+		"%{prj.location}/src/sensor/android/*.c",
+		"%{prj.location}/src/render/*.c",
+		"%{prj.location}/src/render/*/*.c",
+		"%{prj.location}/src/stdlib/*.c",
+		"%{prj.location}/src/thread/*.c",
+		"%{prj.location}/src/thread/pthread/*.c",
+		"%{prj.location}/src/timer/*.c",
+		"%{prj.location}/src/timer/unix/*.c",
+		"%{prj.location}/src/video/*.c",
+		"%{prj.location}/src/video/android/*.c",
+		"%{prj.location}/src/video/yuv2rgb/*.c",
+		"%{prj.location}/src/text/*.c",
+	}
+	
+	includedirs
+	{
+		"%{prj.location}/include",
+		"$(ANDROID_NDK_HOME)"
+	}
+	
+	links
+	{
+		"m","dl","GLESv1CM","GLESv2","OpenSLEs",
+		"log","android"
+	}	
