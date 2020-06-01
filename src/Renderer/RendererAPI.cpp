@@ -2,9 +2,9 @@
 
 #include "../Platform/OpenGL/OpenGLRendererAPI.h"
 
-#if (RENDERER == Vulkan)
+#if (RENDERER_VULKAN)
 RendererAPI::API RendererAPI::s_API = RendererAPI::API::Vulkan;
-#elif (RENDERER == OpenGL)
+#elif (RENDERER_OPENGL)
 RendererAPI::API RendererAPI::s_API = RendererAPI::API::OpenGL;
 #else
 #error Unknown renderer!

@@ -35,9 +35,13 @@ set_property(CACHE PLATFORM PROPERTY STRINGS ${PLATFORM_TYPES})
 # SDL - assume that user has it installed in OS
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
-target_link_libraries(
-	${PROJECT_NAME} SDL2::SDL2main SDL2::SDL2-static
-)
+if(WIN32)
+	target_link_libraries(
+		${PROJECT_NAME} SDL2::SDL2main SDL2::SDL2-static
+	)
+else()
+	target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
+endif()
 
 # Renderer
 set(RENDERER_DEFAULT "OpenGL")
@@ -49,19 +53,19 @@ message(STATUS "Using '${RENDERER}' renderer")
 if(RENDERER MATCHES Vulkan)
 	find_package(Vulkan REQUIRED)
 	# TODO: target_link_libraries(something)
-	target_compile_definitions(${PROJECT_NAME} PRIVATE RENDERER=Vulkan)
+	target_compile_definitions(${PROJECT_NAME} PRIVATE RENDERER_VULKAN)
 elseif(RENDERER MATCHES OpenGL)
 	find_package(OpenGL REQUIRED)
 	add_subdirectory("thirdparty/glad")
 	target_link_libraries(${PROJECT_NAME} glad)
-	target_compile_definitions(${PROJECT_NAME} PRIVATE RENDERER=OpenGL)
+	target_compile_definitions(${PROJECT_NAME} PRIVATE RENDERER_OPENGL)
 else()
 	message(FATAL_ERROR "Couldn't deduce renderer! Please install OpenGL or Vulkan")
 endif()
 
-if(UNIX)
-	set(LIBS GL X11 Xrandr Xi dl pthread)
-endif()
+# if(UNIX)
+# 	set(LIBS GL X11 Xrandr Xi dl pthread)
+# endif()
 
 # Create virtual folders to make it look nicer in VS
 if(MSVC_IDE)
