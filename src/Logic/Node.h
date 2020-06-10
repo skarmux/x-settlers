@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Logic/Movable.h"
+#include "logic/movable.h"
 
 enum class AreaType { GRASS, MOUNTAIN, WATER, SAND };
 

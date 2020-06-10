@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Movable.h"
-#include "../Core/Log.h"
+#include "movable.h"
+#include "core/log.h"
 
 #include <mutex>
 #include <vector>
