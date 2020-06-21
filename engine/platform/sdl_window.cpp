@@ -2,15 +2,15 @@
 #include "rendering/renderer_2d.h"
 #include "core/log.h"
 
-DesktopWindow::DesktopWindow(const WindowProps& props) {
+SDLWindow::SDLWindow(const WindowProps& props) {
 	Init(props);
 }
 
-DesktopWindow::~DesktopWindow() {
+SDLWindow::~SDLWindow() {
 	Shutdown();
 }
 
-void DesktopWindow::Init(const WindowProps& props) {
+void SDLWindow::Init(const WindowProps& props) {
 	m_Data.Title = props.Title;
 	m_Data.Width = props.Width;
 	m_Data.Height = props.Height;
@@ -37,24 +37,20 @@ void DesktopWindow::Init(const WindowProps& props) {
 	m_Context = GraphicsContext::Create(m_Window);
 	m_Context->Init();
 
-	//glfwSetWindowUserPointer(m_Window, &m_Data);
 	SetVSync(true); // default setting
-
-	// TODO: Set SDL callbacks
-	// ...
 }
 
-void DesktopWindow::Shutdown() {
+void SDLWindow::Shutdown() {
 	SDL_DestroyWindow(m_Window);
 	SDL_Quit();
 }
 
-void DesktopWindow::OnUpdate() {
+void SDLWindow::OnUpdate() {
 	//SDL_PollEvent();
 	m_Context->SwapBuffers();
 }
 
-void DesktopWindow::SetVSync(bool enabled) {
+void SDLWindow::SetVSync(bool enabled) {
 	if (enabled) {
 		m_Context->SetSwapInterval(1);
 	}	
@@ -65,6 +61,6 @@ void DesktopWindow::SetVSync(bool enabled) {
 	m_Data.VSync = enabled;
 }
 
-bool DesktopWindow::IsVSync() const {
+bool SDLWindow::IsVSync() const {
 	return m_Data.VSync;
 }

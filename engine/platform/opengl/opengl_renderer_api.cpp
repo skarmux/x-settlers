@@ -16,11 +16,7 @@ void OpenGLRendererAPI::Init()
 		CORE_ERROR("Failed to initialize glad!");
 		exit(2);
 	}
-
-    // TODO: Get rid of the absolute path
-    auto shader = OpenGLShader::Create("C:/Users/Nils/Documents/Projects/X-Settlers/engine/shaders/opengl/texture.glsl");
-    shader->Bind();
-
+    
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
     float vertices[] = {

@@ -5,12 +5,12 @@
 
 #include <SDL.h>
 
-class DesktopWindow : public Window
+class SDLWindow : public Window
 {
 public:
-	DesktopWindow(const WindowProps& props);
+	SDLWindow(const WindowProps& props);
 	
-	virtual ~DesktopWindow();
+	virtual ~SDLWindow();
 
 	void OnUpdate() override;
 

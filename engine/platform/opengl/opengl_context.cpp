@@ -20,16 +20,6 @@ void OpenGLContext::Init()
 
 	// create OpenGL context and make it current
 	SDL_GL_MakeCurrent(m_WindowHandle, m_GLContext);
-
-	// initialize glad
-	/*if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
-		CORE_ERROR("Failed to initialize glad!");
-		exit(2);
-	}*/
-
-	/*int w, h;
-	SDL_GetWindowSize(m_WindowHandle, &w, &h);
-	RenderCommand::SetViewport(0, 0, w, h);*/
 }
 
 void OpenGLContext::SwapBuffers()

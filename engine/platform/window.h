@@ -1,10 +1,10 @@
 #pragma once
 
+#include "events/event.h"
+
 #include <functional>
 #include <string>
 #include <memory>
-
-class Event;
 
 struct WindowProps
 {
@@ -21,7 +21,7 @@ struct WindowProps
 class Window
 {
 public:
-	enum class PLATFORM { SDL, Android };
+	enum class PLATFORM { Desktop, Android };
 
 public:
 	using EventCallbackFn = std::function<void(Event&)>;
@@ -42,4 +42,5 @@ public:
 
 private:
 	static PLATFORM s_Platform;
+
 };

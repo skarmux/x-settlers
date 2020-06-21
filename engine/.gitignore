@@ -1,0 +1,8 @@
+.vs
+CMakeFiles
+Debug
+xsettlers.dir
+cmake_install.cmake
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
