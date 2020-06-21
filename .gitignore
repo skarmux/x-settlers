@@ -1,4 +1,11 @@
-bin
+.vs
+x64
+CMakeFiles
 obj
 build
-.vs
+cmake_install.cmake
+CMakeCache.txt
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
