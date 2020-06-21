@@ -1,7 +1,7 @@
 .vs
 CMakeFiles
 Debug
-xsettlers.dir
+engine.dir
 cmake_install.cmake
 *.vcxproj
 *.vcxproj.filters
