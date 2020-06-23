@@ -29,14 +29,9 @@ public:
 		s_RendererAPI->Clear();
 	}
 
-	static void DrawIndexed(const std::shared_ptr<Vertex>& vertexBuffer, uint32_t count = 0)
+	static void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t count = 0)
 	{
-		s_RendererAPI->DrawIndexed(vertexBuffer, count);
-	}
-
-	static void DrawIndexed()
-	{
-		s_RendererAPI->DrawIndexed();
+		s_RendererAPI->DrawIndexed(vertexArray, count);
 	}
 
 private:

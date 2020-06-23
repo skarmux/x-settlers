@@ -11,6 +11,7 @@ public:
 	inline static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
 	inline static std::shared_ptr<spdlog::logger>& GetRendererLogger() { return s_RendererLogger; }
 	inline static std::shared_ptr<spdlog::logger>& GetNetworkLogger() { return s_NetworkLogger; }
+
 private:
 	static std::shared_ptr<spdlog::logger> s_LogicLogger;
 	static std::shared_ptr<spdlog::logger> s_CoreLogger;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "platform/window.h"
+#include "core/window.h"
 #include "rendering/graphics_context.h"
 
 #include <SDL.h>

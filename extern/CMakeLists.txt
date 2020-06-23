@@ -39,4 +39,4 @@ endif()
 
 # spdlog
 add_subdirectory(spdlog)
-set_property(TARGET spdlog_headers_for_ide PROPERTY FOLDER "extern")
+set_property(TARGET spdlog PROPERTY FOLDER "extern")

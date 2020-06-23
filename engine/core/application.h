@@ -2,7 +2,7 @@
 #include "core/layer_stack.h"
 #include "events/event.h"
 #include "events/app_event.h"
-#include "platform/window.h"
+#include "core/window.h"
 
 int main(int argc, char** argv);
 
