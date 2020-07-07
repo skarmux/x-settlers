@@ -1,11 +1,10 @@
-#include "opengl_context.h"
-#include "core/log.h"
+#include "platform/opengl/opengl_context.h"
 
 OpenGLContext::OpenGLContext(SDL_Window* window) :
-	m_WindowHandle(window),
-	m_GLContext(SDL_GL_CreateContext(window)) {}
+	m_window_handle(window),
+	m_gl_context(SDL_GL_CreateContext(window)) {}
 
-void OpenGLContext::Init()
+void OpenGLContext::init()
 {
 	// don't load additional libraries
 	SDL_GL_LoadLibrary(NULL);
@@ -17,16 +16,15 @@ void OpenGLContext::Init()
 	// request depth buffer
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-
 	// create OpenGL context and make it current
-	SDL_GL_MakeCurrent(m_WindowHandle, m_GLContext);
+	SDL_GL_MakeCurrent(m_window_handle, m_gl_context);
 }
 
-void OpenGLContext::SwapBuffers()
+void OpenGLContext::swap_buffers()
 {
-	SDL_GL_SwapWindow(m_WindowHandle);
+	SDL_GL_SwapWindow(m_window_handle);
 }
 
-void OpenGLContext::SetSwapInterval(int interval) {
+void OpenGLContext::set_swap_interval(int interval) {
 	SDL_GL_SetSwapInterval(interval);
 }

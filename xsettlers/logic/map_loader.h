@@ -6,59 +6,64 @@
 #include <iostream>
 #include <vector>
 #include <array>
+
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 
-#include "playfield.h"
-#include "rendering/vertex.h"
+#include <engine.h>
 
-class MAPloader {
-private:
-	const uint8_t XSTEP = 16; // don't ever touch!
-	const uint8_t YSTEP = 9;  // don't ever touch!
+#include "logic/playfield.h"
 
-	enum part_type {
-		PART_TYPE_EOF = 0, // End of File and Padding
-		PART_TYPE_MapInfo = 1,
-		PART_TYPE_PlayerInfo = 2,
-		PART_TYPE_TeamInfo = 3,
-		PART_TYPE_Preview = 4,
-		PART_TYPE_Area = 6,
-		PART_TYPE_Settlers = 7,
-		PART_TYPE_Buildings = 8,
-		PART_TYPE_Resources = 9,
-		PART_TYPE_QuestText = 11,
-		PART_TYPE_QuestTip = 12,
-		PART_TYPE____COUNT
-	};
+enum class PartType {
+	EoF = 0, MapInfo = 1, PlayerInfo = 2, TeamInfo = 3,
+	Preview = 4, Area = 6, Settlers = 7, Buildings = 8,
+	Resources = 9, QuestText = 11, QuestTip = 12, Count = 12
+};
 
-	struct part_info {
-		uint32_t type;
-		uint32_t length;
-		uint32_t offset;
-		bool encrypted;
-	};
+enum class MapMode {
+	// TODO: set the correct values being used in the map files
+	Conflict, Economy, Free
+};
 
-	bool is_campaign_map_;
+struct PartHeader
+{
+	uint32_t type;
+	uint32_t length;
+	uint32_t offset;
+};
 
-	int player_count_;
-	int resource_preset_;
-	int width_;
+struct MapInfo
+{
+	std::string path;
+	uint32_t size;
+	uint8_t player_count;
+	uint8_t resource_preset;
+	bool is_campaign;
+	MapMode mode;
+	std::vector<PartHeader> parts;
+	// TODO: add preview image to pre-loaded map data
+};
 
-	//bool test[5][5];
+struct MapArea
+{
+	std::vector<uint8_t> heights;
+	std::vector<uint8_t> types;
+	std::vector<uint8_t> objects;
+	std::vector<uint8_t> player_claims;
+	std::vector<uint8_t> accessibles;
+	std::vector<uint8_t> resources;
+};
 
-	std::string filepath_;
-
-	part_info map_parts_[PART_TYPE____COUNT];
-
-	void indexMapFile();
-	void readMapInfo();
-	void decryptPartition(std::vector<char>& map_file, part_info& p_info);
-
+class MapLoader
+{
 public:
-	MAPloader(const std::string);
-	
-	void loadMapArea(std::vector<Vertex>& vertices);
-	glm::vec2 calcPixelPos(uint32_t index);
-	float calcGradient(uint8_t h0, uint8_t h1, uint8_t h2);
+	static void init();
+	static void shutdown();
 
+	static std::vector<MapInfo> get_map_list();
+
+	static void load_map_area(const uint32_t map_index, MapArea& map);
+private:
+	static void index_map_file(const std::string& path);
+	static void decrypt_partition(std::vector<char>& map_file, const PartHeader& part_header);
 };

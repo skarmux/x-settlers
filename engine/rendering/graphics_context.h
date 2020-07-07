@@ -1,13 +1,11 @@
 #pragma once
 
-#include <memory>
-
 class GraphicsContext
 {
 public:
-	virtual void Init() = 0;
-	virtual void SwapBuffers() = 0;
-	virtual void SetSwapInterval(int interval) = 0;
+	virtual void init() = 0;
+	virtual void swap_buffers() = 0;
+	virtual void set_swap_interval(int interval) = 0;
 
-	static std::unique_ptr<GraphicsContext> Create(void* window);
+	static std::unique_ptr<GraphicsContext> create(void* window);
 };

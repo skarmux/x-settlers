@@ -1,10 +1,7 @@
 #pragma once
 
-#include <string>
-
 enum class EventType
 {
-	None = 0,
 	WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
 	AppTick, AppUpdate, AppRender,
 	KeyPressed, KeyReleased,
@@ -13,7 +10,6 @@ enum class EventType
 
 enum EventCategory
 {
-	None = 0,
 	EventCategoryApplication,
 	EventCategoryInput,
 	EventCategoryKeyboard,
@@ -24,16 +20,15 @@ enum EventCategory
 class Event
 {
 public:
-	bool Handled = false;
+	bool m_handled = false;
 
-	virtual EventType GetEventType() const = 0;
-	virtual const char* GetName() const = 0;
-	virtual int GetCategoryFlags() const = 0;
-	virtual std::string ToString() const { return GetName(); };
+	virtual EventType get_event_type() const = 0;
+	virtual const char* get_name() const = 0;
+	virtual int get_category_flags() const = 0;
 
-	bool IsInCategory(EventCategory category)
+	bool is_in_category(EventCategory category)
 	{
-		return GetCategoryFlags() & category;
+		return get_category_flags() & category;
 	}
 };
 
@@ -41,22 +36,22 @@ class EventDispatcher
 {
 public:
 	EventDispatcher(Event& event)
-		: m_Event(event)
+		: m_event(event)
 	{}
 
 	// F will be deduced by the compiler
 	template<typename T, typename F>
-	bool Dispatch(const F& func)
+	bool dispatch(const F& func)
 	{
-		if (m_Event.GetEventType() == T::GetStaticType())
+		if (m_event.get_event_type() == T::get_static_type())
 		{
-			m_Event.Handled = func(static_cast<T&>(m_Event));
+			m_event.m_handled = func(static_cast<T&>(m_event));
 			return true;
 		}
+		
 		return false;
 	}
 
 private:
-	Event& m_Event;
-
+	Event& m_event;
 };

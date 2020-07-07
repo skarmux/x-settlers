@@ -11,35 +11,35 @@ public:
 	
 	virtual ~AndroidWindow();
 
-	void OnUpdate() override;
+	void on_update() override;
 
-	inline unsigned int GetWidth() const override { return m_Data.Width; }
-	inline unsigned int GetHeight() const override { return m_Data.Height; }
+	inline unsigned int get_width() const override { return m_data.width; }
+	inline unsigned int get_height() const override { return m_data.height; }
 
 	// window attributes
-	inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
-	void SetVSync(bool enabled) override;
-	bool IsVSync() const override;
+	inline void set_event_callback(const event_callback_func& callback) override { m_data.event_callback = callback; }
+	void set_vsync(bool enabled) override;
+	bool is_vsync_enabled() const override;
 
 private:
-	virtual void Init(const WindowProps& props);
-	virtual void Shutdown();
+	virtual void init(const WindowProps& props);
+	virtual void shutdown();
 	
 private:
 	EGLDisplay* m_Display;
     EGLSurface* m_Surface;
-    EGLContext* m_Context;
+    EGLContext* m_context;
 
 	//std::unique_ptr<GraphicsContext> m_Context;
 
 	struct WindowData
 	{
-		std::string Title;
-		unsigned int Width, Height;
-		bool VSync;
+		std::string title;
+		unsigned int width, height;
+		bool vsync_enabled;
 
-		EventCallbackFn EventCallback;
+		event_callback_func event_callback;
 	};
 
-	WindowData m_Data;
+	WindowData m_data;
 };

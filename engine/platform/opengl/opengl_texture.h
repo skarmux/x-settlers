@@ -1,6 +1,7 @@
 #pragma once
 
 #include "rendering/texture.h"
+
 #include <glad/glad.h>
 
 class OpenGLTexture2D : public Texture2D
@@ -8,22 +9,16 @@ class OpenGLTexture2D : public Texture2D
 public:
 	OpenGLTexture2D(uint32_t width, uint32_t height);
 	OpenGLTexture2D(const std::string& path);
-	virtual ~OpenGLTexture2D();
+	~OpenGLTexture2D();
 
-	virtual uint32_t GetWidth() const override { return m_Width; }
-	virtual uint32_t GetHeight() const override { return m_Height; }
+	uint32_t get_width() const override { return m_width; }
+	uint32_t get_height() const override { return m_height; }
 
-	virtual void SetData(void* data, uint32_t size) override;
+	void set_data(void* data, uint32_t size) override;
 
-	virtual void Bind(uint32_t slot = 0) const override;
-
-	virtual bool operator==(const Texture& other) const override
-	{
-		return m_RendererID == ((OpenGLTexture2D&)other).m_RendererID;
-	}
+	void bind(uint32_t slot = 0) const override;
 private:
-	std::string m_Path;
-	uint32_t m_Width, m_Height;
-	uint32_t m_RendererID;
-	GLenum m_InternalFormat, m_DataFormat;
+	uint32_t m_width, m_height;
+	uint32_t m_renderer_id;
+	GLenum m_internal_format, m_data_format;
 };

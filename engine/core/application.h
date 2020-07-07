@@ -1,8 +1,10 @@
+#pragma once
 
 #include "core/layer_stack.h"
-#include "events/event.h"
-#include "events/app_event.h"
 #include "core/window.h"
+
+#include "events/event.h"
+#include "events/application_event.h"
 
 int main(int argc, char** argv);
 
@@ -12,29 +14,27 @@ public:
     Application();
     virtual ~Application();
 
-    void PushLayer(Layer* layer);
-    void PushOverlay(Layer* layer);
+    void push_layer(Layer* layer);
 
-    Window& GetWindow() { return *m_Window; }
+    Window& get_window() { return *m_window; }
 
-    static Application& Get() { return *s_Instance; }
-
+    static Application& get_instance() { return *s_instance; }
+    
+    void run();
 private:
-    void Run();
-    bool OnWindowClose(WindowCloseEvent& e);
-    bool OnWindowResize(WindowResizeEvent& e);
-
+    void on_event(Event& e);
+    bool on_window_close(WindowCloseEvent& e);
+    bool on_window_resize(WindowResizeEvent& e);
 private:
-    std::unique_ptr<Window> m_Window;
-    bool m_Running = true;
-    bool m_Minimized = false;
-    LayerStack m_LayerStack;
-    float m_LastFrameTime = 0.0f;
-
+    std::unique_ptr<Window> m_window;
+    bool m_running = true;
+    bool m_minimized = false;
+    LayerStack m_layer_stack;
+    float m_last_frame_time = 0.0f;
 private:
-    static Application* s_Instance;
+    static Application* s_instance;
     friend int ::main(int argc, char** argv);
 };
 
 // To be defined in CLIENT
-Application* CreateApplication();
+Application* create_application();

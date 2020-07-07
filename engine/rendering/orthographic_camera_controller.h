@@ -1,34 +1,47 @@
 #pragma once
 
-#include "rendering/orthographic_camera.h"
-#include "core/timestep.h"
-
 #include <glm/glm.hpp>
-#include <SDL.h>
+
+#include "rendering/orthographic_camera.h"
+
+#include "core/time_delta.h"
+
+#include "events/event.h"
+#include "events/application_event.h"
+#include "events/mouse_event.h"
 
 class OrthographicCameraController
 {
 public:
 	OrthographicCameraController(float aspectRatio);
+	OrthographicCameraController(float width, float height);
 
-	void OnUpdate(Timestep ts);
-	void OnEvent(SDL_Event& e);
+	void on_update(TimeDelta ts);
+	void on_event(Event& e);
 
-	OrthographicCamera& GetCamera() { return m_Camera; }
-	const OrthographicCamera& GetCamera() const { return m_Camera; }
+	OrthographicCamera& get_camera() { return m_camera; }
+	const OrthographicCamera& get_camera() const { return m_camera; }
 
-	float GetZoomLevel() const { return m_ZoomLevel; }
-	void SetZoomLevel(float level) { m_ZoomLevel = level; }
+	float get_zoom_level() const { return m_zoom_level; }
+	void set_zoom_level(float level) {
+		m_zoom_level = level;
+		m_camera.set_projection(-m_aspect_ratio * m_zoom_level, m_aspect_ratio * m_zoom_level, -m_zoom_level, m_zoom_level);
+	}
 
+	void set_position(const glm::vec3& position) { m_camera_position = position; };
 private:
-	bool OnMouseScrolled(SDL_MouseWheelEvent& e);
-	bool OnWindowResized(SDL_WindowEvent& e);
-
+	bool on_mouse_pressed(MousePressedEvent& e);
+	bool on_mouse_released(MouseReleasedEvent& e);
+	bool on_mouse_moved(MouseMovedEvent& e);
+	bool on_mouse_scrolled(MouseScrolledEvent& e);
+	bool on_window_resized(WindowResizeEvent& e);
 private:
-	float m_AspectRatio;
-	float m_ZoomLevel = 1.0f;
-	OrthographicCamera m_Camera;
+	float m_aspect_ratio;
+	float m_zoom_level;
 
-	glm::vec3 m_CameraPosition = { 0.0f, 0.0f, 0.0f };
-	float m_CameraTranslationSpeed = 5.0f, m_CameraRotationSpeed = 180.0f;
+	bool m_move_key_pressed;
+
+	OrthographicCamera m_camera;
+
+	glm::vec3 m_camera_position;
 };

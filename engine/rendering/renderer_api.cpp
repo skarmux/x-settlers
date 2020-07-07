@@ -1,14 +1,13 @@
-#include "renderer_api.h"
+#include "rendering/renderer_api.h"
 
 #include "platform/opengl/opengl_renderer_api.h"
 
-RendererAPI::API RendererAPI::s_API = RendererAPI::API::OpenGL;
+RendererAPI::API RendererAPI::s_api = RendererAPI::API::OpenGL;
 
-std::unique_ptr<RendererAPI> RendererAPI::Create()
+std::unique_ptr<RendererAPI> RendererAPI::create()
 {
-	switch (s_API) {
+	switch (s_api) {
 		case RendererAPI::API::OpenGL:	return std::make_unique<OpenGLRendererAPI>();
-		case RendererAPI::API::Vulkan:	return nullptr;
 		default: return nullptr;
 	}
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "movable.h"
-#include "core/log.h"
+#include "core/logger.h"
 
 #include <mutex>
 #include <vector>
@@ -12,28 +12,29 @@
 
 static const uint8_t STEPS_PER_EDGE = 10;
 
-class PlayField {
+class PlayField
+{
 public:
 	PlayField(const std::string& map_filepath);
 	PlayField(uint32_t width, uint32_t height);
 	virtual ~PlayField();
 
-	void Update();
-	bool PlaceMovable(glm::ivec2& pos, Movable* m);
-	std::queue<glm::ivec2> GetPath(glm::ivec2& start, glm::ivec2& goal);
+	void on_update();
+	bool place_movable(glm::ivec2& pos, Movable* m);
+	std::queue<glm::ivec2> get_path(glm::ivec2& start, glm::ivec2& goal);
 
 private:
-	void UpdateMovablesRow(uint32_t& row);
-	inline std::vector<glm::ivec2> Neighbours(glm::ivec2 pos);
-	inline glm::ivec2 Step(glm::ivec2& pos, DIR dir);
-	inline DIR Direction(glm::ivec2& start, glm::ivec2& goal);
+	void update_movables_row(uint32_t& row);
+	inline std::vector<glm::ivec2> neighbours(glm::ivec2 pos);
+	inline glm::ivec2 step(glm::ivec2& pos, Direction dir);
+	inline Direction direction(glm::ivec2& start, glm::ivec2& goal);
 	
-	void loadMapFile(const std::string& map_filepath);
+	void load_map_file(const std::string& map_filepath);
 
-	void AStarJPS(glm::ivec2& start, glm::ivec2& goal, std::unordered_map<glm::ivec2, glm::ivec2>& came_from, std::unordered_map<glm::ivec2, int>& cost_so_far);
-	inline std::vector<glm::ivec2> IdentifySuccessors(glm::ivec2& parent, glm::ivec2& x, glm::ivec2& start, glm::ivec2& goal);
-	inline glm::ivec2 Jump(glm::ivec2& pos, DIR dir, glm::ivec2& start, glm::ivec2& goal);
-	inline std::vector<glm::ivec2> PrunedNeighbours(glm::ivec2& parent, glm::ivec2& x);
+	void a_star_jps(glm::ivec2& start, glm::ivec2& goal, std::unordered_map<glm::ivec2, glm::ivec2>& came_from, std::unordered_map<glm::ivec2, int>& cost_so_far);
+	inline std::vector<glm::ivec2> identify_successors(glm::ivec2& parent, glm::ivec2& x, glm::ivec2& start, glm::ivec2& goal);
+	inline glm::ivec2 jump(glm::ivec2& pos, Direction dir, glm::ivec2& start, glm::ivec2& goal);
+	inline std::vector<glm::ivec2> pruned_neighbours(glm::ivec2& parent, glm::ivec2& x);
 
 private:
 	uint32_t m_tick;

@@ -2,45 +2,42 @@
 
 #include "events/event.h"
 
-#include <functional>
-#include <string>
-#include <memory>
-
 struct WindowProps
 {
-	std::string Title;
-	unsigned int Width;
-	unsigned int Height;
+	std::string title;
+	unsigned int width;
+	unsigned int height;
 
-	WindowProps(const std::string& title = "X-Settlers",
-		unsigned int width = 1280,
-		unsigned int height = 720)
-		:Title(title), Width(width), Height(height) {}
+	WindowProps(const std::string& title = "Unknown",
+		unsigned int width = 640,
+		unsigned int height = 480 )
+		:title(title), width(width), height(height) {}
 };
 
 class Window
 {
 public:
-	enum class PLATFORM { Desktop, Android };
-
+	enum class Platform
+	{
+		Windows, Linux, MacOS, iOS, Android
+	};
 public:
-	using EventCallbackFn = std::function<void(Event&)>;
+	// declaring 'event_callback_func' as alias
+	using event_callback_func = std::function<void(Event&)>;
 
 	virtual ~Window() {}
 
-	virtual void OnUpdate() = 0;
+	virtual void on_update() = 0;
 
-	virtual unsigned int GetWidth() const = 0;
-	virtual unsigned int GetHeight() const = 0;
+	virtual unsigned int get_width() const = 0;
+	virtual unsigned int get_height() const = 0;
 
 	// Window attributes
-	virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
-	virtual void SetVSync(bool enabled) = 0;
-	virtual bool IsVSync() const = 0;
+	virtual void set_event_callback(const event_callback_func& callback) = 0;
+	virtual void set_vsync(bool enabled) = 0;
+	virtual bool is_vsync_enabled() const = 0;
 
-	static std::unique_ptr<Window> Create(const WindowProps& props = WindowProps());
-
+	static std::unique_ptr<Window> create(const WindowProps& props = WindowProps());
 private:
-	static PLATFORM s_Platform;
-
+	static Platform s_platform;
 };

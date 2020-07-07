@@ -7,26 +7,21 @@ class OrthographicCamera
 public:
 	OrthographicCamera(float left, float right, float bottom, float top);
 
-	void SetProjection(float left, float right, float bottom, float top);
+	void set_projection(float left, float right, float bottom, float top);
 
-	const glm::vec3& GetPosition() const { return m_Position; }
-	void SetPosition(const glm::vec3& position) { m_Position = position; RecalculateViewMatrix(); }
+	const glm::vec3& get_position() const { return m_position; }
+	void set_position(const glm::vec3& position) { m_position = position; recalculate_view_matrix(); }
 
-	float GetRotation() const { return m_Rotation; }
-	void SetRotation(float rotation) { m_Rotation = rotation; RecalculateViewMatrix(); }
-
-	const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
-	const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
-	const glm::mat4& GetViewProjectionMatrix() const { return m_ViewProjectionMatrix; }
-
+	const glm::mat4& get_projection_matrix() const { return m_projection_matrix; }
+	const glm::mat4& get_view_matrix() const { return m_view_matrix; }
+	const glm::mat4& get_view_projection_matrix() const { return m_view_projection_matrix; }
 private:
-	void RecalculateViewMatrix();
-
+	void recalculate_view_matrix();
 private:
-	glm::mat4 m_ProjectionMatrix;
-	glm::mat4 m_ViewMatrix;
-	glm::mat4 m_ViewProjectionMatrix;
+	glm::mat4 m_projection_matrix;
+	glm::mat4 m_view_matrix;
+	glm::mat4 m_view_projection_matrix;
 
-	glm::vec3 m_Position = { 0.0f, 0.0f, 0.0f };
-	float m_Rotation = 0.0f;
+	glm::vec3 m_position = { 0.0f, 0.0f, 0.0f };
+	float m_rotation = 0.0f;
 };

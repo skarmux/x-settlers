@@ -1,9 +1,9 @@
 #pragma once
 
-#include "core/log.h"
+#include "core/logger.h"
 #include "core/application.h"
 #include "core/layer.h"
-#include "core/timestep.h"
+#include "core/time_delta.h"
 #include "core/window.h"
 
 #include "rendering/renderer_2d.h"

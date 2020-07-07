@@ -2,18 +2,17 @@
 
 #include "rendering/graphics_context.h"
 
-#include <SDL.h>
+#include <SDL.h> // TODO remove SDL dependency
 
 class OpenGLContext : public GraphicsContext
 {
 public:
 	OpenGLContext(SDL_Window* windowHandle);
 
-	virtual void Init() override;
-	virtual void SwapBuffers() override;
-	virtual void SetSwapInterval(int interval) override;
-
+	void init() override;
+	void swap_buffers() override;
+	void set_swap_interval(int interval) override;
 private:
-	SDL_Window* m_WindowHandle;
-	SDL_GLContext m_GLContext;
+	SDL_Window* m_window_handle;
+	SDL_GLContext m_gl_context;
 };

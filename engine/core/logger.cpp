@@ -1,12 +1,13 @@
-#include "log.h"
+#include "core/logger.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
-std::shared_ptr<spdlog::logger> Log::s_LogicLogger;
-std::shared_ptr<spdlog::logger> Log::s_CoreLogger;
-std::shared_ptr<spdlog::logger> Log::s_RendererLogger;
-std::shared_ptr<spdlog::logger> Log::s_NetworkLogger;
+std::shared_ptr<spdlog::logger> Logger::s_LogicLogger;
+std::shared_ptr<spdlog::logger> Logger::s_CoreLogger;
+std::shared_ptr<spdlog::logger> Logger::s_RendererLogger;
+std::shared_ptr<spdlog::logger> Logger::s_NetworkLogger;
+std::shared_ptr<spdlog::logger> Logger::s_EventLogger;
 
-void Log::Init() {
+void Logger::init() {
 	spdlog::set_pattern("%^[%T] %n: %v%$");
 
 	s_LogicLogger = spdlog:: stdout_color_mt("Logic");
@@ -20,4 +21,7 @@ void Log::Init() {
 
 	s_NetworkLogger = spdlog::stdout_color_mt("Network");
 	s_NetworkLogger->set_level(spdlog::level::trace);
+
+	s_EventLogger = spdlog::stdout_color_mt("Event");
+	s_EventLogger->set_level(spdlog::level::trace);
 }

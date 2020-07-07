@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.16)
 
 # project(engine LANGUAGES CXX)
 
@@ -13,65 +13,62 @@ set(CORE_H
     core/application.h
     core/layer.h
     core/layer_stack.h
-    core/log.h
-    core/input.h
-    core/key_codes.h
+    core/logger.h
     core/entry_point.h
-    core/timestep.h
+    core/time_delta.h
     core/window.h)
 
 set(CORE_SRC
     core/application.cpp
     core/layer.cpp
     core/layer_stack.cpp
-    core/log.cpp
+    core/logger.cpp
     core/window.cpp)
 
 set(CORE_FILES ${CORE_H} ${CORE_SRC})
 
+set(EVENT_FILES
+    events/application_event.h
+    events/event.h
+    events/mouse_event.h)
+
 set(RENDERING_H
     rendering/buffer.h
     rendering/graphics_context.h
+    rendering/orthographic_camera.h
+    rendering/orthographic_camera_controller.h
     rendering/render_command.h
     rendering/renderer_2d.h
     rendering/renderer_api.h
     rendering/shader.h
     rendering/texture.h
-    rendering/vertex.h
-    rendering/vertex_array.h
-    rendering/orthographic_camera.h
-    rendering/orthographic_camera_controller.h)
+    rendering/texture_atlas.h
+    rendering/vertex_array.h)
 
 set(RENDERING_SRC
     rendering/buffer.cpp
     rendering/graphics_context.cpp
+    rendering/orthographic_camera.cpp
+    rendering/orthographic_camera_controller.cpp
     rendering/render_command.cpp
     rendering/renderer_2d.cpp
     rendering/renderer_api.cpp
     rendering/shader.cpp
     rendering/texture.cpp
-    rendering/vertex_array.cpp
-    rendering/orthographic_camera.cpp
-    rendering/orthographic_camera_controller.cpp)
+    rendering/texture_atlas.cpp
+    rendering/vertex_array.cpp)
 
 set(RENDERING_FILES ${RENDERING_H} ${RENDERING_SRC})
 
 set(PLATFORM_FILES
-    # header
-    platform/filesystem.h
-    # source
-    )
+    platform/filesystem.h)
 
 set(ANDROID_FILES
-    # header
     platform/android/android_window.h
-    # source
     platform/android/android_window.cpp)
 
 set(SDL_FILES
-    # header
     platform/sdl_window.h
-    # source
     platform/sdl_window.cpp)
 
 set(OPENGL_H
@@ -80,6 +77,7 @@ set(OPENGL_H
     platform/opengl/opengl_renderer_api.h
     platform/opengl/opengl_shader.h
     platform/opengl/opengl_texture.h
+    platform/opengl/opengl_texture_atlas.h
     platform/opengl/opengl_vertex_array.h)
 
 set(OPENGL_SRC
@@ -88,6 +86,7 @@ set(OPENGL_SRC
     platform/opengl/opengl_renderer_api.cpp
     platform/opengl/opengl_shader.cpp
     platform/opengl/opengl_texture.cpp
+    platform/opengl/opengl_texture_atlas.cpp
     platform/opengl/opengl_vertex_array.cpp)
 
 set(OPENGL_FILES ${OPENGL_H} ${OPENGL_SRC})
@@ -111,6 +110,7 @@ set(VULKAN_FILES
 source_group("\\" FILES engine.h)
 source_group("core\\" FILES ${CORE_SRC})
 source_group("core\\headers" FILES ${CORE_H})
+source_group("events\\" FILES ${EVENT_FILES})
 source_group("rendering\\" FILES ${RENDERING_SRC})
 source_group("rendering\\headers" FILES ${RENDERING_H})
 source_group("platform\\" FILES ${PLATFORM_FILES} ${SDL_FILES} ${GLFW_FILES})
@@ -125,6 +125,7 @@ source_group("platform\\vulkan" FILES ${VULKAN_FILES})
 set(PROJECT_FILES
     engine.h
     ${CORE_FILES}
+    ${EVENT_FILES}
     ${PLATFORM_FILES}
     ${RENDERING_FILES})
 
@@ -146,11 +147,28 @@ add_library(engine STATIC ${PROJECT_FILES})
 
 # setup target
 
+set_property(TARGET engine PROPERTY CXX_STANDARD 17)
+
 target_include_directories(engine PUBLIC
     ${CMAKE_SOURCE_DIR}/extern/glm
     ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(engine spdlog glad stb)
+
+# https://gitlab.kitware.com/cmake/cmake/merge_requests/3553
+target_precompile_headers(engine
+    PRIVATE
+        [["core/logger.h"]]
+        <string>
+        <fstream>
+        <iostream>
+        <memory>
+        <array>
+        <vector>
+        <algorithm>
+        <functional>
+        <unordered_map>        
+)
 
 if(ENGINE_RENDER_API STREQUAL "OpenGL")
 

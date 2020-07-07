@@ -2,7 +2,10 @@
 
 #include "movable.h"
 
-enum class AreaType { GRASS, MOUNTAIN, WATER, SAND };
+enum class AreaType
+{ 
+	Grass, Mountain, Water, Sand
+};
 
 struct Node {
 	Movable* movable;
