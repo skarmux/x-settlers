@@ -4,6 +4,8 @@
 
 * C Standard: C++17
 
+![X-Settlers Topography](./xsettlers/docs/screenshots/xsettlers_topography.png)
+
 ## Upcoming Features
 
 * Texture Atlas creation directly from original Settlers 3 GFX files
