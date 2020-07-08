@@ -58,44 +58,44 @@ int index_buffer_id = 0; // [0-6]
 
 for (int row = 0; row < (size - 1); row++)
 {
-		for (int col = 0; col < (size - 1); col++)
+	for (int col = 0; col < (size - 1); col++)
+	{
+		int i0 = (size * row) + col;
+		int i1 = i0 + 1;
+		int i2 = i0 + size;
+		int i3 = i0 + size + 1;
+
+		switch (index_buffer_id)
 		{
-			int i0 = (size * row) + col;
-			int i1 = i0 + 1;
-			int i2 = i0 + size;
-			int i3 = i0 + size + 1;
+		case 0:
+			index_buffers[0].push_back(i0); // A
+			index_buffers[0].push_back(i3);
+			index_buffers[0].push_back(i2);
+			index_buffers[1].push_back(i0); // B
+			index_buffers[1].push_back(i1);
+			index_buffers[1].push_back(i3);
+			break;
 
-			switch (index_buffer_id)
-			{
-			case 0:
-				index_buffers[0].push_back(i0); // A
-				index_buffers[0].push_back(i3);
-				index_buffers[0].push_back(i2);
-				index_buffers[1].push_back(i0); // B
-				index_buffers[1].push_back(i1);
-				index_buffers[1].push_back(i3);
-				break;
+		case 2:
+			index_buffers[2].push_back(i0); // A
+			index_buffers[2].push_back(i3);
+			index_buffers[2].push_back(i2);
+			index_buffers[3].push_back(i0); // B
+			index_buffers[3].push_back(i1);
+			index_buffers[3].push_back(i3);
+			break;
 
-			case 2:
-				index_buffers[2].push_back(i0); // A
-				index_buffers[2].push_back(i3);
-				index_buffers[2].push_back(i2);
-				index_buffers[3].push_back(i0); // B
-				index_buffers[3].push_back(i1);
-				index_buffers[3].push_back(i3);
-				break;
-
-			case 4:
-				index_buffers[4].push_back(i0); // A
-				index_buffers[4].push_back(i3);
-				index_buffers[4].push_back(i2);
-				index_buffers[5].push_back(i0); // B
-				index_buffers[5].push_back(i1);
-				index_buffers[5].push_back(i3);
-				break;
-			}
-			index_buffer_id = (index_buffer_id + 2) % 6;
+		case 4:
+			index_buffers[4].push_back(i0); // A
+			index_buffers[4].push_back(i3);
+			index_buffers[4].push_back(i2);
+			index_buffers[5].push_back(i0); // B
+			index_buffers[5].push_back(i1);
+			index_buffers[5].push_back(i3);
+			break;
 		}
-		index_buffer_id = (row * 2) % 6;
+		index_buffer_id = (index_buffer_id + 2) % 6;
+	}
+	index_buffer_id = (row * 2) % 6;
 }
 ```
