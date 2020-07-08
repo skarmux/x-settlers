@@ -21,8 +21,8 @@
 
 ### Engine Documentation
 
-  * [Components](./engine/docs/ENGINE.md)
-  * [Renderer](./engine/docs/COMPONENTS.md)
+  * [Components](./engine/docs/COMPONENTS.md)
+  * [Renderer](./engine/docs/RENDERER.md)
 
 ### X-Settlers Documentation
 
