@@ -4,6 +4,6 @@ In order to strip down memory usage, it shouldn't be necessary to store each pos
 
 To allow for each triangle to be drawn via index buffer, each vertex having only one pair of UV coordinates while drawing, there must be at least six runs, each using a different index buffer, to draw only triangles that do not share any vertex in the same run, and another vertex buffer layout, that uses a different pair of UV coordinates within the vertex buffer.
 
-<img src="./graphics/vertex_layouts.svg">
+![Vertex Layouts](./graphics/vertex_layouts.svg)
 
 Only the vertex buffer layout and index buffer need to be swapped between draw calls.
