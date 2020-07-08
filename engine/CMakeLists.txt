@@ -34,7 +34,6 @@ set(EVENT_FILES
 
 set(RENDERING_H
     rendering/buffer.h
-    rendering/graphics_context.h
     rendering/orthographic_camera.h
     rendering/orthographic_camera_controller.h
     rendering/render_command.h
@@ -47,7 +46,6 @@ set(RENDERING_H
 
 set(RENDERING_SRC
     rendering/buffer.cpp
-    rendering/graphics_context.cpp
     rendering/orthographic_camera.cpp
     rendering/orthographic_camera_controller.cpp
     rendering/render_command.cpp
@@ -73,36 +71,29 @@ set(SDL_FILES
 
 set(OPENGL_H
     platform/opengl/opengl_buffer.h
-    platform/opengl/opengl_context.h
     platform/opengl/opengl_renderer_api.h
     platform/opengl/opengl_shader.h
     platform/opengl/opengl_texture.h
-    platform/opengl/opengl_texture_atlas.h
     platform/opengl/opengl_vertex_array.h)
 
 set(OPENGL_SRC
     platform/opengl/opengl_buffer.cpp
-    platform/opengl/opengl_context.cpp
     platform/opengl/opengl_renderer_api.cpp
     platform/opengl/opengl_shader.cpp
     platform/opengl/opengl_texture.cpp
-    platform/opengl/opengl_texture_atlas.cpp
     platform/opengl/opengl_vertex_array.cpp)
 
 set(OPENGL_FILES ${OPENGL_H} ${OPENGL_SRC})
 
 set(GLES_FILES
     # header
-    platform/gles/gles_context.h
     platform/gles/gles_renderer_api.h
     # source
-    platform/gles/gles_context.cpp
     platform/gles/gles_renderer_api.cpp)
 
 set(VULKAN_FILES
     # header
     platform/vulkan/vulkan_buffer.h
-    platform/vulkan/vulkan_context.h
     platform/vulkan/vulkan_renderer_api.h)
 
 # group files for cleaner project display within some IDEs
@@ -167,7 +158,7 @@ target_precompile_headers(engine
         <vector>
         <algorithm>
         <functional>
-        <unordered_map>        
+        <unordered_map>
 )
 
 if(ENGINE_RENDER_API STREQUAL "OpenGL")
@@ -189,7 +180,7 @@ if(ENGINE_RENDER_API STREQUAL "OpenGL")
 elseif(ENGINE_RENDER_API STREQUAL "Vulkan")
 
     message(STATUS "Adding Vulkan API to project.")
-    find_package(Vulkan REQUIRED)    
+    find_package(Vulkan REQUIRED)
     target_link_libraries(engine vulkan)
 
 else()
