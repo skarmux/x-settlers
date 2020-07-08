@@ -19,6 +19,15 @@
 * [Contributing](#contributing)
 * [Credits](#credits)
 
+### Engine Documentation
+
+  * [Components](./engine/docs/ENGINE.md)
+  * [Renderer](./engine/docs/COMPONENTS.md)
+
+### X-Settlers Documentation
+
+  * [Maps](./xsettlers/docs/MAPS.md)
+
 # Project Setup
 
 Make sure to include the git submodules when cloning the repository!
