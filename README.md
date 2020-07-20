@@ -6,11 +6,17 @@
 
 ![X-Settlers Topography](./xsettlers/docs/screenshots/xsettlers_topography.png)
 
+Also checkout the [OpenS4 Project](https://github.com/MadShadow-/OpenS4) with more progress in settlers game logic implementation.
+
 ## Upcoming Features
 
-* Texture Atlas creation directly from original Settlers 3 GFX files
-* Consistent camera dragging behavior, regardless of current zoomlevel
-* Assigning correct texture atlas UV coordinates to each triangle vertex based on field type (grass, rock, sea, etc.)
+- [x] Texture Atlas creation directly from original Settlers 3 GFX files
+- [x] Consistent camera dragging behavior, regardless of current zoomlevel
+- [ ] Assigning correct texture atlas UV coordinates to each triangle vertex based on field type (grass, rock, sea, etc.)
+
+## Planned Features
+
+* Generate map texture as LOD mesh replacement at certain camera distance
 
 # Table of Contents
 
