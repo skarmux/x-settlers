@@ -1,0 +1,78 @@
+128x128 [In-Between] (Wrapping / Transition)
+
+0 Grass
+1 Dry Grass
+2 Soil
+3 Construction
+4 [5,6] Dark Swamp
+7 [8,9] Swamp
+10 [11-17] Sea
+18 [19,20] Desert
+21 [22,23]
+24 [25,26] (27-30) Snow
+31 [32-34] Beach
+35 Construction !DUPLICATE
+36 Dry Desert
+(37,38) Sand > Lake
+(39,40) Lake > Sand
+(41-44)
+(45-48) Rock > Grass
+(49-51) Light Blue Shimmering
+
+(53,53) Grass > River (S)
+(54,55) River (S) > Grass
+(56,57) Grass > River (M)
+(58,59) River (M) > Grass
+(60,61) Grass > River (L)
+(62,63) River (L) > Grass
+(64,65) Grass > River (XL)
+(66,67) River (XL) > Grass
+
+(68,69) Sand > Waves (1)
+(70,71) Waves (1) > Sand
+(72,73) Sand > Waves (2)
+(74,75) Waves (2) > Sand
+(76,77) Sand > Waves (3)
+(78,79) Waves (3) > Sand
+(80,81) Sand > Waves (4)
+(82,83) Waves (4) > Sand
+
+(84,85) Sea (1) > Sea (2)
+(86,87) Sea (2) > Sea (1)
+...
+(108,109) Sea (7) > Sea (8)
+(110,111) Sea (8) > Sea (7)
+
+(112,113) Beach > Grass
+(112,113) Grass > Beach
+
+(172,173) Grass > Construction
+(174,175) Construction > Grass
+
+?176?
+
+(181,182) Grass > Construction !DUPLICATE
+(183,184) Construction > Grass !DUPLICATE
+
+(185,186) Grass > Bricks
+(187,188) Bricks > Grass
+
+(189,190) Grass > Construction !DUPLICATE
+(191,192) Construction > Grass !DUPLICATE
+
+217 Dark Desert
+
+230 (231-234) Concrete
+
+-------------------------------------------------------------
+
+ ID : Type
+
+ 10 :   7 Sea
+  0 :  16 Grass
+ 21 :  32 Rock
+ 31 :  48 Beach
+ 18 :  64 Desert
+  7 :  80 Swamp
+ 24 : 128 Snow
+  4 : 144 Mud
