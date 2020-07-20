@@ -1,6 +1,6 @@
 #pragma once
 
-static std::vector<char> read_file(const std::string& filepath) {
+static std::vector<uint8_t> read_file(const std::string& filepath) {
 	std::ifstream file(filepath, std::ios::ate | std::ios::binary);
 
 	if (!file.is_open()) {
@@ -8,10 +8,10 @@ static std::vector<char> read_file(const std::string& filepath) {
 	}
 
 	size_t fileSize = (size_t)file.tellg();
-	std::vector<char> buffer(fileSize);
+	std::vector<uint8_t> buffer(fileSize);
 
 	file.seekg(0);
-	file.read(buffer.data(), fileSize);
+	file.read((char*)buffer.data(), fileSize);
 
 	file.close();
 
