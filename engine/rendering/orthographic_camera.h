@@ -10,7 +10,7 @@ public:
 	void set_projection(float left, float right, float bottom, float top);
 
 	const glm::vec3& get_position() const { return m_position; }
-	void set_position(const glm::vec3& position) { m_position = position; recalculate_view_matrix(); }
+	void set_camera_position(const glm::vec3& position) { m_position = position; recalculate_view_matrix(); }
 
 	const glm::mat4& get_projection_matrix() const { return m_projection_matrix; }
 	const glm::mat4& get_view_matrix() const { return m_view_matrix; }
