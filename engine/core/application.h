@@ -11,7 +11,7 @@ int main(int argc, char** argv);
 class Application
 {
 public:
-    Application();
+    Application(const std::string& name, uint32_t width, uint32_t height);
     virtual ~Application();
 
     void push_layer(Layer* layer);

@@ -6,18 +6,19 @@
 
 #include "events/mouse_event.h"
 
-#include <SDL.h> // TODO: remove SDL dependency
+#include <Windows.h>
 
 Application* Application::s_instance = nullptr;
 
-Application::Application()
+Application::Application(const std::string& name, uint32_t width, uint32_t height)
 {
 	s_instance = this;
 
-	WindowProps properties;
-	properties.title = "X-Settlers";
-	properties.width = 1280;
-	properties.height = 720;
+	WindowProps properties{};
+	properties.title = name;
+	properties.width = width;
+	properties.height = height;
+
 	m_window = Window::create(properties);
 	m_window->set_event_callback(std::bind(&Application::on_event, this, std::placeholders::_1));
 
@@ -51,10 +52,10 @@ void Application::on_event(Event& e)
 }
 
 void Application::run()
-{
+{	
 	while (m_running)
 	{
-		float time = (float)SDL_GetTicks(); //(float)glfwGetTime();
+		float time = m_window->get_time();
 		TimeDelta time_delta = time - m_last_frame_time;
 		m_last_frame_time = time;
 
@@ -73,12 +74,14 @@ void Application::run()
 
 bool Application::on_window_close(WindowCloseEvent& e)
 {
+	CORE_INFO("received WindowCloseEvent()");
 	m_running = false;
 	return true;
 }
 
 bool Application::on_window_resize(WindowResizeEvent& e)
 {
+	CORE_INFO("received WindowResizeEvent()");
 	if (e.get_width() == 0 || e.get_height() == 0)
 	{
 		m_minimized = true;
