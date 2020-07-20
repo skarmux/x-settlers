@@ -65,6 +65,10 @@ set(ANDROID_FILES
     platform/android/android_window.h
     platform/android/android_window.cpp)
 
+set(WINDOWS_FILES
+    platform/windows/windows_window.h
+    platform/windows/windows_window.cpp)
+
 set(SDL_FILES
     platform/sdl_window.h
     platform/sdl_window.cpp)
@@ -105,6 +109,7 @@ source_group("events\\" FILES ${EVENT_FILES})
 source_group("rendering\\" FILES ${RENDERING_SRC})
 source_group("rendering\\headers" FILES ${RENDERING_H})
 source_group("platform\\" FILES ${PLATFORM_FILES} ${SDL_FILES} ${GLFW_FILES})
+source_group("platform\\windows" FILES ${WINDOWS_FILES})
 source_group("platform\\android" FILES ${ANDROID_FILES})
 source_group("platform\\opengl" FILES ${OPENGL_SRC})
 source_group("platform\\opengl\\headers" FILES ${OPENGL_H})
@@ -122,9 +127,13 @@ set(PROJECT_FILES
 
 if(ANDROID)
     list(APPEND PROJECT_FILES ${ANDROID_FILES})
-else()
-    list(APPEND PROJECT_FILES ${SDL_FILES})
 endif()
+
+if(WIN32)
+    list(APPEND PROJECT_FILES ${WINDOWS_FILES})
+endif()
+
+list(APPEND PROJECT_FILES ${SDL_FILES})
 
 if(ENGINE_RENDER_API STREQUAL "OpenGL")
     list(APPEND PROJECT_FILES ${OPENGL_FILES})

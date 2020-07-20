@@ -2,24 +2,19 @@ cmake_minimum_required(VERSION 3.10)
 
 # define project files
 
-set(LOGIC_H 
-    logic/map_loader.h
-    logic/movable.h
-    logic/node.h
-    logic/playfield.h)
+set(LOGIC_H
+    logic/map_loader.h)
 
 set(LOGIC_SRC
-    logic/map_loader.cpp
-    logic/movable.cpp
-    logic/playfield.cpp)
+    logic/map_loader.cpp)
 
 set(LOGIC_FILES ${LOGIC_H} ${LOGIC_SRC})
 
 set(LAYER_H
-    layer/landscape.h)
+    layer/terrain_layer.h)
 
 set(LAYER_SRC
-    layer/landscape.cpp)
+    layer/terrain_layer.cpp)
 
 set(LAYER_FILES ${LAYER_H} ${LAYER_SRC})
 
