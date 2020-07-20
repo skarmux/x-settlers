@@ -180,80 +180,82 @@ void OpenGLShader::unbind() const
 	glUseProgram(0);
 }
 
+
+
 void OpenGLShader::set_int(const std::string& path, int value)
 {
-	upload_uniform_int(path, value);
+	bind();
+	GLint location = glGetUniformLocation(m_renderer_id, path.c_str());
+	glUniform1i(location, value);
+	unbind();
 }
 
-void OpenGLShader::set_int_array(const std::string& path, int* values, uint32_t count)
-{
-	upload_uniform_int_array(path, values, count);
-}
+
 
 void OpenGLShader::set_float(const std::string& path, float value)
 {
-	upload_uniform_float(path, value);
+	bind();
+	GLint location = glGetUniformLocation(m_renderer_id, path.c_str());
+	glUniform1f(location, value);
+	unbind();
 }
 
-void OpenGLShader::set_float3(const std::string& path, const glm::vec3& value)
+void OpenGLShader::set_vec2(const std::string& path, const glm::vec2& value)
 {
-	upload_uniform_float3(path, value);
+	bind();
+	GLint location = glGetUniformLocation(m_renderer_id, path.c_str());
+	glUniform2f(location, value.x, value.y);
+	unbind();
 }
 
-void OpenGLShader::set_float4(const std::string& path, const glm::vec4& value)
+void OpenGLShader::set_vec3(const std::string& path, const glm::vec3& value)
 {
-	upload_uniform_float4(path, value);
+	bind();
+	GLint location = glGetUniformLocation(m_renderer_id, path.c_str());
+	glUniform3f(location, value.x, value.y, value.z);
+	unbind();
+}
+
+void OpenGLShader::set_vec4(const std::string& path, const glm::vec4& value)
+{
+	bind();
+	GLint location = glGetUniformLocation(m_renderer_id, path.c_str());
+	glUniform4f(location, value.x, value.y, value.z, value.w);
+	unbind();
+}
+
+
+
+void OpenGLShader::set_int_array(const std::string& path, int* values, uint32_t count)
+{
+	bind();
+	GLint location = glGetUniformLocation(m_renderer_id, path.c_str());
+	glUniform1iv(location, count, values);
+	unbind();
+}
+
+void OpenGLShader::set_float_array(const std::string& path, float* values, uint32_t count)
+{
+	bind();
+	GLint location = glGetUniformLocation(m_renderer_id, path.c_str());
+	glUniform1fv(location, count, values);
+	unbind();
+}
+
+
+
+void OpenGLShader::set_mat3(const std::string& path, const glm::mat3& value)
+{
+	bind();
+	GLint location = glGetUniformLocation(m_renderer_id, path.c_str());
+	glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
+	unbind();
 }
 
 void OpenGLShader::set_mat4(const std::string& path, const glm::mat4& value)
 {
-	upload_uniform_mat4(path, value);
-}
-
-void OpenGLShader::upload_uniform_int(const std::string& path, int value)
-{
+	bind();
 	GLint location = glGetUniformLocation(m_renderer_id, path.c_str());
-	glUniform1i(location, value);
-}
-
-void OpenGLShader::upload_uniform_int_array(const std::string& path, int* values, uint32_t count)
-{
-	GLint location = glGetUniformLocation(m_renderer_id, path.c_str());
-	glUniform1iv(location, count, values);
-}
-
-void OpenGLShader::upload_uniform_float(const std::string& path, float value)
-{
-	GLint location = glGetUniformLocation(m_renderer_id, path.c_str());
-	glUniform1f(location, value);
-}
-
-void OpenGLShader::upload_uniform_float2(const std::string& path, const glm::vec2& value)
-{
-	GLint location = glGetUniformLocation(m_renderer_id, path.c_str());
-	glUniform2f(location, value.x, value.y);
-}
-
-void OpenGLShader::upload_uniform_float3(const std::string& path, const glm::vec3& value)
-{
-	GLint location = glGetUniformLocation(m_renderer_id, path.c_str());
-	glUniform3f(location, value.x, value.y, value.z);
-}
-
-void OpenGLShader::upload_uniform_float4(const std::string& path, const glm::vec4& value)
-{
-	GLint location = glGetUniformLocation(m_renderer_id, path.c_str());
-	glUniform4f(location, value.x, value.y, value.z, value.w);
-}
-
-void OpenGLShader::upload_uniform_mat3(const std::string& path, const glm::mat3& matrix)
-{
-	GLint location = glGetUniformLocation(m_renderer_id, path.c_str());
-	glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
-}
-
-void OpenGLShader::upload_uniform_mat4(const std::string& path, const glm::mat4& matrix)
-{
-	GLint location = glGetUniformLocation(m_renderer_id, path.c_str());
-	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
+	unbind();
 }

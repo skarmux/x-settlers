@@ -10,4 +10,5 @@
 #include "rendering/render_command.h"
 #include "rendering/shader.h"
 #include "rendering/texture.h"
+#include "rendering/texture_atlas.h"
 #include "rendering/orthographic_camera_controller.h"

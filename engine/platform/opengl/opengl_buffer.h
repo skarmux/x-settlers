@@ -12,7 +12,7 @@ public:
 	void bind() const override;
 	void unbind() const override;
 
-	void set_data(const void* data, uint32_t size) override;
+	void push_data(const void* data, uint32_t size) override;
 
 	const BufferLayout& get_layout() const override { return m_layout; }
 	void set_layout(const BufferLayout& layout) override { m_layout = layout; };
