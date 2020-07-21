@@ -44,7 +44,7 @@ static uint32_t tex_id_from_types(uint8_t type_a, uint8_t type_b, uint8_t type_c
 
 void TerrainLayer::on_attach()
 {
-	RenderCommand::set_clear_color(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	MapLoader::init();
 
 	TextureAtlas atlas;
 	std::vector<uint32_t> texture_ids;
@@ -72,7 +72,7 @@ void TerrainLayer::on_attach()
 
 	// LOAD MAP
 
-	MapLoader::init();
+	
 
 	std::vector<MapInfo>& maps = MapLoader::get_map_list();
 	for (MapInfo map_info : maps) {
@@ -144,12 +144,12 @@ void TerrainLayer::on_attach()
 			v4.tex = { v4.pos.x / 128.0f, v4.pos.y / 128.0f };
 			v5.tex = { v5.pos.x / 128.0f, v5.pos.y / 128.0f };
 
-			v0.tex_index = 1.0f;;
-			v1.tex_index = 1.0f;;
-			v2.tex_index = 1.0f;;
-			v3.tex_index = 1.0f;;
-			v4.tex_index = 1.0f;;
-			v5.tex_index = 1.0f;;
+			v0.tex_index = 1.0f;
+			v1.tex_index = 1.0f;
+			v2.tex_index = 1.0f;
+			v3.tex_index = 1.0f;
+			v4.tex_index = 1.0f;
+			v5.tex_index = 1.0f;
 
 			// row shifting x position
 
@@ -207,14 +207,10 @@ void TerrainLayer::on_update(TimeDelta time_delta)
 {
 	m_camera_controller.on_update(time_delta);
 
-	RenderCommand::clear();
-
-	//Renderer2D::draw_quad({0,0}, m_test_settler); // Another layer should draw settlers on top
-
 	Renderer2D::begin_scene(m_camera_controller.get_camera());
 	Renderer2D::submit(
 		m_vertex_buffer,
-		(m_map_info.size - 1) * (m_map_info.size - 1) * 2 * 3,
+		((uint64_t)m_map_info.size - 1) * ((uint64_t)m_map_info.size - 1) * 2 * 3,
 		m_tex_terrain[0] );
 	Renderer2D::end_scene();
 }

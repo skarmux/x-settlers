@@ -23,6 +23,7 @@ Application::Application(const std::string& name, uint32_t width, uint32_t heigh
 	m_window->set_event_callback(std::bind(&Application::on_event, this, std::placeholders::_1));
 
 	RenderCommand::init();
+
 	Renderer2D::init();
 }
 
@@ -61,11 +62,11 @@ void Application::run()
 
 		if (!m_minimized)
 		{
-			{
-				// update layer stack
-				for (Layer* layer : m_layer_stack)
-					layer->on_update(time_delta);
-			}
+			RenderCommand::clear();
+
+			// update layer stack
+			for (Layer* layer : m_layer_stack)
+				layer->on_update(time_delta);
 		}
 
 		m_window->on_update();
