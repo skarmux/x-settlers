@@ -3,76 +3,146 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 
+#include <math.h>
+
 inline static glm::vec2 gridpos_to_world(uint32_t x, uint32_t y, uint32_t width)
 {
 	constexpr uint32_t GRID_X_STEP = 16;
-	constexpr uint32_t GRID_Y_STEP = 9;
+	constexpr uint32_t GRID_Y_STEP = 8;
 
 	return glm::vec2(x * GRID_X_STEP, (width - y) * GRID_Y_STEP);
 }
 
-static uint32_t tex_id_from_types(uint8_t type_a, uint8_t type_b, uint8_t type_c)
+glm::vec2* TerrainLayer::tex_coords_from_types(
+	uint8_t t0, uint8_t t1, uint8_t t2,
+	const glm::vec2& p0, const glm::vec2& p1, const glm::vec2& p2 ) const
 {
-	glm::vec2 tex_coords[] = { {0.0f,0.0f}, {0.0f,0.0f}, {0.0f,0.0f} };
+	glm::vec2 tex_coords[] = { {0.0f,0.0f}, {1.0f,0.0f}, {0.0f,1.0f} };
 
-	/* Soil = 1, Bricks = 2, Sand = 3, Sea = 7, Grass = 16,
-	Rock = 32, SandTrace = 35, DrySandTrace = 36, Beach = 48,
-	Desert = 64, Swamp = 80, Ice = 128, Mud = 144, DarkSoil = 217,
-	Cement = 230 */
+	int32_t tex_id = -1;
 
-	//switch (m_map_area[(width * (row - padding)) + col - padding].type)
-	//{
-	//case 0:
-	//case 1: s_data.rhomb_vertex_buffer_ptr->tex_index = 1; break; // grass
-	//case 2:
-	//case 3: s_data.rhomb_vertex_buffer_ptr->tex_index = 3; break; // sand
-	//case 7: s_data.rhomb_vertex_buffer_ptr->tex_index = 4; break; // water
-	//case 10:
-	//case 16: s_data.rhomb_vertex_buffer_ptr->tex_index = 1; break; // grass
-	//case 17: s_data.rhomb_vertex_buffer_ptr->tex_index = 4; break; // water
-	//case 21:
-	//case 32: s_data.rhomb_vertex_buffer_ptr->tex_index = 2; break; // rock
-	//case 35:
-	//case 36:
-	//case 48:
-	//case 64: s_data.rhomb_vertex_buffer_ptr->tex_index = 3; break; // sand
-	//default: s_data.rhomb_vertex_buffer_ptr->tex_index = 1;
-	//}
+	if (t0 == t1 && t1 == t2)
+	{
+		// 128 x 128 FULL
 
-	return 0;
+		tex_coords[0] = {
+			std::fmod(p0.x, 128.0f) / 128.0f,
+			1.0f - std::fmod(p0.y, 128.0f) / 128.0f };
+		tex_coords[1] = {
+			std::fmod(p1.x, 128.0f) / 128.0f,
+			1.0f - std::fmod(p1.y, 128.0f) / 128.0f };
+		tex_coords[2] = {
+			std::fmod(p2.x, 128.0f) / 128.0f,
+			1.0f - std::fmod(p2.y, 128.0f) / 128.0f };
+
+		// handle overflow condition
+
+		float& u0 = tex_coords[0].x;
+		float& u1 = tex_coords[1].x;
+		float& u2 = tex_coords[2].x;
+		float& v0 = tex_coords[0].y;
+		float& v1 = tex_coords[1].y;
+		float& v2 = tex_coords[2].y;
+
+		if (u0 > 1.0f || u1 > 1.0f || u2 > 1.0f || v0 > 1.0f || v1 > 1.0f || v2 > 1.0f)
+			RENDERER_ERROR("texture coordinate out of range");
+
+		if (u0 < 0.0f || u1 < 0.0f || u2 < 0.0f || v0 < 0.0f || v1 < 0.0f || v2 < 0.0f)
+			RENDERER_ERROR("texture coordinate out of range");
+
+		// 0     0 --- 1   v|y ^
+		// | \     \ B |       |
+		// | A \     \ |       |
+		// 2 --- 1     2     0 +---- > u|x
+
+		// handle edge cases
+		if (p0.y != p1.y)
+		{
+			if (u2 == 1.0f && u2 > u1) // A0
+			{
+				u0 = 0.0f;
+				u2 = 0.0f;
+			}
+			else if (u1 == 0.0f && u1 < u2) // A1
+			{
+				u1 = 1.0f;
+			}
+
+			if (v0 == 1.0f && v0 > v2) // A2
+			{
+				v0 = 0.0f;
+			}
+			else if (v2 == 0.0f && v2 < v0) // A3
+			{
+				v2 = 1.0f;
+				v1 = 1.0f;
+			}
+		}
+		else
+		{
+			if (u1 == 0.0f && u1 < u0) // B0
+			{
+				u1 = 1.0f;
+				u2 = 1.0f;
+			}
+			else if (u0 == 1.0f && u0 > u1) // B1
+			{
+				u0 = 0.0f;
+			}
+
+			if (v1 == 1.0f && v1 > v2) // B2
+			{
+				v0 = 0.0f;
+				v1 = 0.0f;
+			}
+			else if (v2 == 0.0f && v2 < v1) // B3
+			{
+				v2 = 1.0f;
+			}
+		}
+
+		switch (t0)
+		{
+		case 7:   tex_id = 10; break; // SEA
+		case 16: // GRASS
+		{
+			tex_id = 0;
+			break; 
+		}
+		case 32:  tex_id = 21; break; // ROCK
+		case 48:  tex_id = 31; break; // BEACH
+		case 64:  tex_id = 18; break; // DESERT
+		case 80:  tex_id =  7; break; // SWAMP
+		case 128: tex_id = 24; break; // SNOW/ICE
+		case 144: tex_id =  4; break; // MUD
+		}
+
+		if (tex_id >= 0)
+		{
+			m_atlas.translate_to_atlas_coords(tex_id, tex_coords[0]);
+			m_atlas.translate_to_atlas_coords(tex_id, tex_coords[1]);
+			m_atlas.translate_to_atlas_coords(tex_id, tex_coords[2]);
+		}		
+	}
+
+	return tex_coords;
 }
 
 void TerrainLayer::on_attach()
 {
 	MapLoader::init();
 
-	TextureAtlas atlas;
-	std::vector<uint32_t> texture_ids;
 	{
 		// fetch MapData for each map file within 'assets/maps/' folder
 		const std::string texture_folder = "assets/textures/s3/terrain/";
 		for (uint32_t i = 0; i < 235; i++)
 		{
 			uint32_t tmp_id;
-			atlas.add_texture(texture_folder + std::to_string(i) + ".png", tmp_id);
-			texture_ids.push_back(tmp_id);
+			m_atlas.add_texture(texture_folder + std::to_string(i) + ".png");
 		}
 
-		// how to get from texture space to texture coordinate range?
-		// available information x/y offset and width/height plus atlas width/height
-		std::vector<TextureAtlas::Space> texture_spaces(texture_ids.size());
-		for (uint32_t i = 0; i < texture_ids.size(); i++)
-			texture_spaces[i] = atlas.get_texture_space(texture_ids[i]);
+		m_atlas_texture = m_atlas.create_texture(1024, 1024);
 	}
-
-	m_tex_terrain.emplace_back(Texture2D::create("assets/textures/free/0.png")); // grass
-	m_tex_terrain.emplace_back(Texture2D::create("assets/textures/free/1.png")); // sand
-	m_tex_terrain.emplace_back(Texture2D::create("assets/textures/free/2.png")); // rock
-	m_tex_terrain.emplace_back(Texture2D::create("assets/textures/free/3.png")); // water
-
-	// LOAD MAP
-
-	
 
 	std::vector<MapInfo>& maps = MapLoader::get_map_list();
 	for (MapInfo map_info : maps) {
@@ -85,13 +155,12 @@ void TerrainLayer::on_attach()
 		);
 	}
 
-	// select map from selection
-	m_map_info = maps[0];
+	m_map_info = maps[0]; // select first map from selection
 
 	m_map_area = new MapNode[(uint64_t)m_map_info.size * (uint64_t)m_map_info.size];
 	MapLoader::load_map_area(0, m_map_area);
 
-	// create terrain vertex buffer
+	// fill terrain vertex buffer
 
 	m_vertex_buffer = 
 		new Renderer2D::TriVertex[((uint64_t)m_map_info.size - 1) * ((uint64_t)m_map_info.size - 1) * 2 * 3];
@@ -101,7 +170,7 @@ void TerrainLayer::on_attach()
 	{
 		for (uint32_t x = 0; x < m_map_info.size - 1; x++)
 		{
-			//      (0) (3)--- 4
+			//      (0) (3) -- 4
 			//      / \   \ B /
 			//     / A \   \ /
 			//    2 --- 1   5
@@ -114,7 +183,7 @@ void TerrainLayer::on_attach()
 			MapNode& n2 = m_map_area[(m_map_info.size * (y + 1)) + x];
 			MapNode& n3 = n0;
 			MapNode& n4 = m_map_area[(m_map_info.size * y) + x + 1];
-			MapNode& n5 = n1;	
+			MapNode& n5 = n1;
 
 			// TODO: maybe not work on HEAP here
 			// doesn't matter for now as this is executed once
@@ -133,17 +202,25 @@ void TerrainLayer::on_attach()
 			v4.pos = gridpos_to_world(x + 1, y, m_map_info.size);
 			v5.pos = v1.pos;
 
-			// TODO: map texture coords from atlas to vertices based on GroundType
-			/*uint32_t tex_id_a = tex_id_from_types(n0.type, n3.type, n2.type);
-			uint32_t tex_id_b = tex_id_from_types(n0.type, n1.type, n3.type);*/
+			// looking up texture coordinates
 
-			v0.tex = { v0.pos.x / 128.0f, v0.pos.y / 128.0f };
-			v1.tex = { v1.pos.x / 128.0f, v1.pos.y / 128.0f };
-			v2.tex = { v2.pos.x / 128.0f, v2.pos.y / 128.0f };
-			v3.tex = { v3.pos.x / 128.0f, v3.pos.y / 128.0f };
-			v4.tex = { v4.pos.x / 128.0f, v4.pos.y / 128.0f };
-			v5.tex = { v5.pos.x / 128.0f, v5.pos.y / 128.0f };
+			glm::vec2* tex_coords_a = 
+				tex_coords_from_types(
+					n0.type, n1.type, n2.type,
+					v0.pos, v1.pos, v2.pos);
+			v0.tex = tex_coords_a[0];
+			v1.tex = tex_coords_a[1];
+			v2.tex = tex_coords_a[2];
 
+			glm::vec2* tex_coords_b = 
+				tex_coords_from_types(
+					n3.type, n4.type, n5.type,
+					v3.pos, v4.pos, v5.pos);
+			v3.tex = tex_coords_b[0];
+			v4.tex = tex_coords_b[1];
+			v5.tex = tex_coords_b[2];
+
+			// TODO: stop using texture indices, and use one single tex atlas instead
 			v0.tex_index = 1.0f;
 			v1.tex_index = 1.0f;
 			v2.tex_index = 1.0f;
@@ -151,7 +228,7 @@ void TerrainLayer::on_attach()
 			v4.tex_index = 1.0f;
 			v5.tex_index = 1.0f;
 
-			// row shifting x position
+			// row-shifting x position
 
 			v0.pos.x += (m_map_info.size - y + 1) * 8;
 			v3.pos.x += (m_map_info.size - y + 1) * 8;
@@ -211,7 +288,7 @@ void TerrainLayer::on_update(TimeDelta time_delta)
 	Renderer2D::submit(
 		m_vertex_buffer,
 		((uint64_t)m_map_info.size - 1) * ((uint64_t)m_map_info.size - 1) * 2 * 3,
-		m_tex_terrain[0] );
+		m_atlas_texture);
 	Renderer2D::end_scene();
 }
 
