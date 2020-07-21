@@ -115,8 +115,6 @@ void MapLoader::load_map_area(uint32_t map_index, MapNode* area)
 	const MapInfo& map_info = s_data.map_infos[map_index];
 	const PartHeader& area_part_header = map_info.parts[static_cast<uint32_t>(PartType::Area)];
 
-	//area = new MapNode[(uint64_t)map_info.size * (uint64_t)map_info.size];
-
 	std::vector<uint8_t> map_file = read_file(map_info.path);
 
 	decrypt_partition(map_file, area_part_header);
