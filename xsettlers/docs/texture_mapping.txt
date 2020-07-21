@@ -1,3 +1,8 @@
+Texture Variations:
+    128x128 Full
+    32x32 Full
+    32x32 Hexagon
+
 128x128 [In-Between] (Wrapping / Transition)
 
 0 Grass
@@ -68,11 +73,18 @@
 
  ID : Type
 
+    :   1 Soil
+    :   2 Bricks
+    :   3 Sand
  10 :   7 Sea
   0 :  16 Grass
  21 :  32 Rock
+    :  35 Sand Trace
+    :  36 Dry Sand Trace
  31 :  48 Beach
  18 :  64 Desert
   7 :  80 Swamp
- 24 : 128 Snow
+ 24 : 128 Snow/Ice
   4 : 144 Mud
+    : 217 Dark Soil
+    : 230 Cement
