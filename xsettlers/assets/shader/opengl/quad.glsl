@@ -8,7 +8,7 @@ layout (location = 2) in float a_TexIndex;
 uniform mat4 u_ViewProjection;
 
 out vec2 v_TexCoord;
-out float v_TexIndex;
+flat out float v_TexIndex;
 
 void main()
 {
@@ -21,7 +21,7 @@ void main()
 #version 460 core
 
 in vec2 v_TexCoord;
-in float v_TexIndex;
+flat in float v_TexIndex;
 
 layout(location = 0) out vec4 color;
 

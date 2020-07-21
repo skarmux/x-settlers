@@ -9,7 +9,7 @@ layout (location = 3) in float a_Shade;
 uniform mat4 u_ViewProjection;
 
 out vec2  v_TexCoord;
-out float v_TexIndex;
+flat out float v_TexIndex;
 out float v_Shade;
 
 void main()
@@ -24,7 +24,7 @@ void main()
 #version 460 core
 
 in vec2  v_TexCoord;
-in float v_TexIndex;
+flat in float v_TexIndex;
 in float v_Shade;
 
 layout(location = 0) out vec4 color;
