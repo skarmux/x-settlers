@@ -102,13 +102,13 @@ public:
 	virtual void bind() const = 0;
 	virtual void unbind() const = 0;
 
-	virtual void push_data(const void* data, uint32_t size) = 0;
+	virtual void push_data(const void* data, size_t size) = 0;
 
 	virtual const BufferLayout& get_layout() const = 0;
 	virtual void set_layout(const BufferLayout& layout) = 0;
 
-	static std::shared_ptr<VertexBuffer> create(uint32_t size);
-	static std::shared_ptr<VertexBuffer> create(float* vertices, uint32_t size);
+	static std::shared_ptr<VertexBuffer> create(size_t size);
+	static std::shared_ptr<VertexBuffer> create(float* vertices, size_t size);
 };
 
 class IndexBuffer
