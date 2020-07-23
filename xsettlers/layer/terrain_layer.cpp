@@ -1,9 +1,7 @@
 #include "layer/terrain_layer.h"
 
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
-#include <glm/glm.hpp>
-
-#include <math.h>
+#include <glm/glm.hpp> /* vec2 */
 
 inline static glm::vec2 gridpos_to_world(uint32_t x, uint32_t y, uint32_t width)
 {
@@ -14,101 +12,53 @@ inline static glm::vec2 gridpos_to_world(uint32_t x, uint32_t y, uint32_t width)
 }
 
 glm::vec2* TerrainLayer::tex_coords_from_types(
-	uint8_t t0, uint8_t t1, uint8_t t2,
-	const glm::vec2& p0, const glm::vec2& p1, const glm::vec2& p2 ) const
+	uint8_t type_0,
+	uint8_t type_1,
+	uint8_t type_2,
+	const glm::ivec2& gridpos_0,
+	const glm::ivec2& gridpos_1,
+	const glm::ivec2& gridpos_2 ) const
 {
-	glm::vec2 tex_coords[] = { {0.0f,0.0f}, {1.0f,0.0f}, {0.0f,1.0f} };
+	glm::vec2 tex_coords[3];
 
 	int32_t tex_id = -1;
 
-	if (t0 == t1 && t1 == t2)
+	if (type_0 == type_1 && type_1 == type_2) // 128x128 REPEAT
 	{
-		// 128 x 128 FULL
-
+		constexpr float TEX_SEGMENTS = 8.0f;
+		
 		tex_coords[0] = {
-			std::fmod(p0.x, 128.0f) / 128.0f,
-			1.0f - std::fmod(p0.y, 128.0f) / 128.0f };
-		tex_coords[1] = {
-			std::fmod(p1.x, 128.0f) / 128.0f,
-			1.0f - std::fmod(p1.y, 128.0f) / 128.0f };
-		tex_coords[2] = {
-			std::fmod(p2.x, 128.0f) / 128.0f,
-			1.0f - std::fmod(p2.y, 128.0f) / 128.0f };
+			(float)(gridpos_0.x % (int)TEX_SEGMENTS) / TEX_SEGMENTS,
+			(float)(gridpos_0.y % (int)TEX_SEGMENTS) / TEX_SEGMENTS };
 
-		// handle overflow condition
+		// 0     0 --- 1     +----> u|x
+		// | \     \ B |     |
+		// | A \     \ |     |
+		// 2 --- 1     2     v v|y
 
-		float& u0 = tex_coords[0].x;
-		float& u1 = tex_coords[1].x;
-		float& u2 = tex_coords[2].x;
-		float& v0 = tex_coords[0].y;
-		float& v1 = tex_coords[1].y;
-		float& v2 = tex_coords[2].y;
-
-		if (u0 > 1.0f || u1 > 1.0f || u2 > 1.0f || v0 > 1.0f || v1 > 1.0f || v2 > 1.0f)
-			RENDERER_ERROR("texture coordinate out of range");
-
-		if (u0 < 0.0f || u1 < 0.0f || u2 < 0.0f || v0 < 0.0f || v1 < 0.0f || v2 < 0.0f)
-			RENDERER_ERROR("texture coordinate out of range");
-
-		// 0     0 --- 1   v|y ^
-		// | \     \ B |       |
-		// | A \     \ |       |
-		// 2 --- 1     2     0 +---- > u|x
-
-		// handle edge cases
-		if (p0.y != p1.y)
+		if (gridpos_0.y != gridpos_1.y)
 		{
-			if (u2 == 1.0f && u2 > u1) // A0
-			{
-				u0 = 0.0f;
-				u2 = 0.0f;
-			}
-			else if (u1 == 0.0f && u1 < u2) // A1
-			{
-				u1 = 1.0f;
-			}
-
-			if (v0 == 1.0f && v0 > v2) // A2
-			{
-				v0 = 0.0f;
-			}
-			else if (v2 == 0.0f && v2 < v0) // A3
-			{
-				v2 = 1.0f;
-				v1 = 1.0f;
-			}
+			tex_coords[1] = { // A
+				tex_coords[0].x + (1.0f / TEX_SEGMENTS),
+				tex_coords[0].y + (1.0f / TEX_SEGMENTS) };
+			tex_coords[2] = {
+				tex_coords[0].x,
+				tex_coords[0].y + (1.0f / TEX_SEGMENTS) };
 		}
 		else
 		{
-			if (u1 == 0.0f && u1 < u0) // B0
-			{
-				u1 = 1.0f;
-				u2 = 1.0f;
-			}
-			else if (u0 == 1.0f && u0 > u1) // B1
-			{
-				u0 = 0.0f;
-			}
-
-			if (v1 == 1.0f && v1 > v2) // B2
-			{
-				v0 = 0.0f;
-				v1 = 0.0f;
-			}
-			else if (v2 == 0.0f && v2 < v1) // B3
-			{
-				v2 = 1.0f;
-			}
+			tex_coords[1] = { // B
+				tex_coords[0].x + (1.0f / TEX_SEGMENTS),
+				tex_coords[0].y };
+			tex_coords[2] = {
+				tex_coords[0].x + (1.0f / TEX_SEGMENTS),
+				tex_coords[0].y + (1.0f / TEX_SEGMENTS) };
 		}
 
-		switch (t0)
+		switch (type_0)
 		{
 		case 7:   tex_id = 10; break; // SEA
-		case 16: // GRASS
-		{
-			tex_id = 0;
-			break; 
-		}
+		case 16:  tex_id =  0; break; // GRASS
 		case 32:  tex_id = 21; break; // ROCK
 		case 48:  tex_id = 31; break; // BEACH
 		case 64:  tex_id = 18; break; // DESERT
@@ -116,13 +66,95 @@ glm::vec2* TerrainLayer::tex_coords_from_types(
 		case 128: tex_id = 24; break; // SNOW/ICE
 		case 144: tex_id =  4; break; // MUD
 		}
+	}
+	else if (type_0 == type_1) // Hexagonal A
+	{
+		//     0     0 --- 1   v|y ^
+		//    / \     \ B /        |
+		//   / A \     \ /         |
+		// (2)--- 1    (2)       0 +---- > u|x
 
-		if (tex_id >= 0)
+		tex_coords[2] = { 0.5f, 0.5f }; // center
+
+		if (gridpos_0.y != gridpos_1.y)
 		{
-			m_atlas.translate_to_atlas_coords(tex_id, tex_coords[0]);
-			m_atlas.translate_to_atlas_coords(tex_id, tex_coords[1]);
-			m_atlas.translate_to_atlas_coords(tex_id, tex_coords[2]);
-		}		
+			tex_coords[0] = { 0.75f, 0.0f }; // A
+			tex_coords[1] = { 1.00f, 0.5f };
+		}
+		else
+		{
+			tex_coords[0] = { 0.25f, 0.0f }; // B
+			tex_coords[1] = { 0.75f, 0.0f };
+		}
+
+		if (type_2 == 16 && type_0 == 48) // Beach > (Grass)
+			tex_id = ((gridpos_0.x + gridpos_0.y) % 2 == 0) ? 112 : 113;
+
+		else if (type_2 == 48 && type_0 == 16) // Grass > (Beach)
+			tex_id = ((gridpos_0.x + gridpos_0.y) % 2 == 0) ? 114 : 115;
+	}
+	else if (type_1 == type_2) // Hexagonal B
+	{
+		//   (0)   (0)--- 1   v|y ^
+		//   / \     \ B /        |
+		//  / A \     \ /         |
+		// 2 --- 1     2        0 +---- > u|x
+
+		tex_coords[0] = { 0.5f, 0.5f }; // center
+
+		if (gridpos_0.y != gridpos_1.y)
+		{
+			tex_coords[1] = { 0.75f, 1.0f }; // A
+			tex_coords[2] = { 0.25f, 1.0f };
+		}
+		else
+		{
+			tex_coords[1] = { 1.00f, 0.5f }; // B
+			tex_coords[2] = { 0.75f, 1.0f };
+		}
+
+		if (type_0 == 16 && type_2 == 48) // Beach > (Grass)
+			tex_id = ((gridpos_0.x + gridpos_0.y) % 2 == 0) ? 112 : 113;
+
+		else if (type_0 == 48 && type_1 == 16) // Grass > (Beach)
+			tex_id = ((gridpos_0.x + gridpos_0.y) % 2 == 0) ? 114 : 115;
+	}
+	else if (type_2 == type_0) // Hexagonal C
+	{
+		//    0     0 ---(1)  v|y ^
+		//   / \     \ B /        |
+		//  / A \     \ /         |
+		// 2 ---(1)    2        0 +---- > u|x
+
+		tex_coords[1] = { 0.5f, 0.5f }; // center
+
+		if (gridpos_0.y != gridpos_1.y)
+		{
+			tex_coords[0] = { 0.25f, 0.0f }; // A
+			tex_coords[2] = { 0.00f, 0.5f };
+		}
+		else
+		{
+			tex_coords[0] = { 0.00f, 0.5f }; // B
+			tex_coords[2] = { 0.25f, 1.0f };
+		}
+
+		if (type_1 == 16 && type_0 == 48) // Beach > (Grass)
+			tex_id = ((gridpos_0.x + gridpos_0.y) % 2 == 0) ? 112 : 113;
+
+		else if (type_1 == 48 && type_2 == 16) // Grass > (Beach)
+			tex_id = ((gridpos_0.x + gridpos_0.y) % 2 == 0) ? 114 : 115;
+	}
+	else
+	{
+		RENDERER_WARN("There are three individual types in one triangle {0}, {1}, {2}",type_0,type_1,type_2);
+	}
+
+	if (tex_id > -1)
+	{
+		m_atlas.translate_to_atlas_coords(tex_id, tex_coords[0]);
+		m_atlas.translate_to_atlas_coords(tex_id, tex_coords[1]);
+		m_atlas.translate_to_atlas_coords(tex_id, tex_coords[2]);
 	}
 
 	return tex_coords;
@@ -166,23 +198,22 @@ void TerrainLayer::on_attach()
 		new Renderer2D::TriVertex[((uint64_t)m_map_info.size - 1) * ((uint64_t)m_map_info.size - 1) * 2 * 3];
 	Renderer2D::TriVertex* vertex_buffer_ptr = (Renderer2D::TriVertex*)m_vertex_buffer;
 
-	for (uint32_t y = 0; y < m_map_info.size - 1; y++)
+	for (uint32_t row = 0; row < m_map_info.size - 1; row++)
 	{
-		for (uint32_t x = 0; x < m_map_info.size - 1; x++)
+		for (uint32_t col = 0; col < m_map_info.size - 1; col++)
 		{
-			//      (0) (3) -- 4
-			//      / \   \ B /
-			//     / A \   \ /
-			//    2 --- 1   5
-			//   /     /   /
-			//  /     /   /
-			// 6     7   7
+			// 0     3 --- 4     +----> u|x
+			// | \     \ B |     |
+			// | A \     \ |     |
+			// 2 --- 1     5     v v|y
+			// |     |     |
+			// 6     7     7
 
-			MapNode& n0 = m_map_area[(m_map_info.size * y) + x];
-			MapNode& n1 = m_map_area[(m_map_info.size * (y + 1)) + x + 1];
-			MapNode& n2 = m_map_area[(m_map_info.size * (y + 1)) + x];
+			MapNode& n0 = m_map_area[(m_map_info.size * row) + col];
+			MapNode& n1 = m_map_area[(m_map_info.size * (row + 1)) + col + 1];
+			MapNode& n2 = m_map_area[(m_map_info.size * (row + 1)) + col];
 			MapNode& n3 = n0;
-			MapNode& n4 = m_map_area[(m_map_info.size * y) + x + 1];
+			MapNode& n4 = m_map_area[(m_map_info.size * row) + col + 1];
 			MapNode& n5 = n1;
 
 			// TODO: maybe not work on HEAP here
@@ -195,27 +226,37 @@ void TerrainLayer::on_attach()
 			Renderer2D::TriVertex& v4 = vertex_buffer_ptr[4];
 			Renderer2D::TriVertex& v5 = vertex_buffer_ptr[5];
 
-			v0.pos = gridpos_to_world(x, y, m_map_info.size);
-			v1.pos = gridpos_to_world(x + 1, y + 1, m_map_info.size);
-			v2.pos = gridpos_to_world(x, y + 1, m_map_info.size);
-			v3.pos = v0.pos;
-			v4.pos = gridpos_to_world(x + 1, y, m_map_info.size);
-			v5.pos = v1.pos;
+			// setting up texture(-atlas) coordinates
 
-			// looking up texture coordinates
+			// 0     3 --- 4     +----> u|x
+			// | \     \ B |     |
+			// | A \     \ |     |
+			// 2 --- 1     5     v v|y
 
 			glm::vec2* tex_coords_a = 
 				tex_coords_from_types(
-					n0.type, n1.type, n2.type,
-					v0.pos, v1.pos, v2.pos);
+					n0.type,
+					n1.type,
+					n2.type,
+					{ col, row },         // 0
+					{ col + 1, row + 1 }, // 1
+					{ col, row + 1 }      // 2
+			);
+
 			v0.tex = tex_coords_a[0];
 			v1.tex = tex_coords_a[1];
 			v2.tex = tex_coords_a[2];
 
-			glm::vec2* tex_coords_b = 
+			glm::vec2* tex_coords_b =
 				tex_coords_from_types(
-					n3.type, n4.type, n5.type,
-					v3.pos, v4.pos, v5.pos);
+					n3.type,
+					n4.type,
+					n5.type,
+					{ col, row },        // 3
+					{ col + 1, row },    // 4
+					{ col + 1, row + 1 } // 5
+			);
+
 			v3.tex = tex_coords_b[0];
 			v4.tex = tex_coords_b[1];
 			v5.tex = tex_coords_b[2];
@@ -228,14 +269,28 @@ void TerrainLayer::on_attach()
 			v4.tex_index = 1.0f;
 			v5.tex_index = 1.0f;
 
+			// transforming grid location to world position
+
+			v0.pos = gridpos_to_world(col, row, m_map_info.size);
+			v1.pos = gridpos_to_world(col + 1, row + 1, m_map_info.size);
+			v2.pos = gridpos_to_world(col, row + 1, m_map_info.size);
+			v3.pos = v0.pos;
+			v4.pos = gridpos_to_world(col + 1, row, m_map_info.size);
+			v5.pos = v1.pos;
+
 			// row-shifting x position
 
-			v0.pos.x += (m_map_info.size - y + 1) * 8;
-			v3.pos.x += (m_map_info.size - y + 1) * 8;
-			v4.pos.x += (m_map_info.size - y + 1) * 8;
-			v1.pos.x += (m_map_info.size - y) * 8;
-			v2.pos.x += (m_map_info.size - y) * 8;
-			v5.pos.x += (m_map_info.size - y) * 8;
+			v0.pos.x += (m_map_info.size - row + 1) * 8;
+			v3.pos.x += (m_map_info.size - row + 1) * 8;
+			v4.pos.x += (m_map_info.size - row + 1) * 8;
+			v1.pos.x += (m_map_info.size - row) * 8;
+			v2.pos.x += (m_map_info.size - row) * 8;
+			v5.pos.x += (m_map_info.size - row) * 8;
+
+			// --> (0) (3) -- 4
+			//     / \   \ B /
+			//    / A \   \ /
+			//   2 --- 1   5
 
 			// height shifting y position
 
@@ -252,10 +307,10 @@ void TerrainLayer::on_attach()
 			v3.shade = v0.shade;
 			v4.shade = 0.875f + (float)(n4.height - n5.height) * 0.1f;
 
-			if (y < m_map_info.size - 2)
+			if (row < m_map_info.size - 2)
 			{
-				MapNode& n6 = m_map_area[(m_map_info.size * (y + 2)) + x];
-				MapNode& n7 = m_map_area[(m_map_info.size * (y + 2)) + x + 1];
+				MapNode& n6 = m_map_area[(m_map_info.size * (row + 2)) + col];
+				MapNode& n7 = m_map_area[(m_map_info.size * (row + 2)) + col + 1];
 
 				v1.shade = 0.875f + (float)(n1.height - n7.height) * 0.1f;
 				v2.shade = 0.875f + (float)(n2.height - n6.height) * 0.1f;

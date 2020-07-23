@@ -22,8 +22,8 @@ public:
 	void on_event(Event& e) override;
 private:
 	glm::vec2* tex_coords_from_types(
-		uint8_t type_a, uint8_t type_b, uint8_t type_c,
-		const glm::vec2& pos_a, const glm::vec2& pos_b, const glm::vec2& pos_c) const;
+		uint8_t type_0, uint8_t type_1, uint8_t type_2,
+		const glm::ivec2& gridpos_0, const glm::ivec2& gridpos_1, const glm::ivec2& gridpos_2) const;
 private:
 	MapNode* m_map_area;
 	MapInfo m_map_info; // TODO: may be removable
