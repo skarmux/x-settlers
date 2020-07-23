@@ -3,8 +3,6 @@
 //#define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-#include <math.h>
-
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
 
@@ -207,10 +205,10 @@ void TextureAtlas::translate_to_atlas_coords(uint32_t tex_id, glm::vec2& tex_coo
 	const Space& tex_space = m_texture_spaces[tex_id];
 
 	// draw coordinates a tiny bit on the inside to avoid texture bleeding
-	if (tex_coord.x == 0.0f) tex_coord.x += 0.01;
-	if (tex_coord.x == 1.0f) tex_coord.x -= 0.01;
-	if (tex_coord.y == 0.0f) tex_coord.y += 0.01;
-	if (tex_coord.y == 1.0f) tex_coord.y -= 0.01;
+	if (tex_coord.x < 0.5f) tex_coord.x += 0.01;
+	if (tex_coord.x > 0.5f) tex_coord.x -= 0.01;
+	if (tex_coord.y < 0.5f) tex_coord.y += 0.01;
+	if (tex_coord.y > 0.5f) tex_coord.y -= 0.01;
 
 	// bring local tex_coords into local pixel space, add atlas pixel offset
 	// and divide by atlas width/height to get the final uv coord within atlas
