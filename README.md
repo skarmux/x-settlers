@@ -10,6 +10,7 @@ Also checkout the [OpenS4 Project](https://github.com/MadShadow-/OpenS4) with mo
 
 ## Upcoming Features
 
+- [ ] Add perfomance profiling options. (ImGUI)
 - [ ] Texture Atlas creation ~~directly from original Settlers 3 GFX files~~
 - [ ] Load S3 graphics and maps directly from s3 install directory
 - [x] Consistent camera dragging behavior, regardless of current zoomlevel
