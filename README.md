@@ -10,9 +10,12 @@ Also checkout the [OpenS4 Project](https://github.com/MadShadow-/OpenS4) with mo
 
 ## Upcoming Features
 
-- [x] Texture Atlas creation directly from original Settlers 3 GFX files
+- [ ] Texture Atlas creation ~~directly from original Settlers 3 GFX files~~
+- [ ] Load S3 graphics and maps directly from s3 install directory
 - [x] Consistent camera dragging behavior, regardless of current zoomlevel
-- [ ] Assigning correct texture atlas UV coordinates to each triangle vertex based on field type (grass, rock, sea, etc.)
+- [x] Assigning correct texture atlas UV coordinates to each triangle vertex based on field type (grass, rock, sea, etc.)
+- [ ] More easily understandable, editable texture assignment. (maybe ID lookup table)
+- [ ] Order map into quadtree data structure for fast CPU-side view frustum culling.
 
 ## Planned Features
 
