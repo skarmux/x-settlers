@@ -4,7 +4,7 @@
 
 * C Standard: C++17
 
-![X-Settlers Topography](./xsettlers/docs/screenshots/xsettlers_topography.png)
+![X-Settlers Topography](./xsettlers/docs/screenshots/xsettlers_textured.png)
 
 Also checkout the [OpenS4 Project](https://github.com/MadShadow-/OpenS4) with more progress in settlers game logic implementation.
 
