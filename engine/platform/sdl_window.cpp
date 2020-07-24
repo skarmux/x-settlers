@@ -100,6 +100,7 @@ void SDLWindow::on_update()
 				m_event_callback(WindowCloseEvent());
 				break;
 			}
+			break;
 
 		case SDL_MOUSEWHEEL:
 
