@@ -2,9 +2,7 @@
 
 #include <glad/glad.h>
 
-/*=================================================================*\
-|| VERTEX BUFFER                                                   ||
-\*=================================================================*/
+// VERTEX BUFFER
 
 OpenGLVertexBuffer::OpenGLVertexBuffer(size_t size)
 {
@@ -41,9 +39,7 @@ void OpenGLVertexBuffer::push_data(const void* data, size_t size)
 	glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 }
 
-/*=================================================================*\
-|| INDEX BUFFER                                                    ||
-\*=================================================================*/
+// INDEX BUFFER
 
 OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* indices, uint32_t count)
 	: m_count(count)
