@@ -21,6 +21,7 @@ public:
 	void on_update(TimeDelta ts) override;
 	void on_event(Event& e) override;
 private:
+	inline glm::vec2 gridpos_to_worldpos(uint32_t x, uint32_t y, uint32_t width) const;
 	glm::vec2* tex_coords_from_types(
 		uint8_t type_0, uint8_t type_1, uint8_t type_2,
 		const glm::ivec2& gridpos_0, const glm::ivec2& gridpos_1, const glm::ivec2& gridpos_2) const;
