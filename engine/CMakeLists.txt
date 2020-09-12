@@ -59,7 +59,8 @@ set(RENDERING_SRC
 set(RENDERING_FILES ${RENDERING_H} ${RENDERING_SRC})
 
 set(PLATFORM_FILES
-    platform/filesystem.h)
+    platform/filesystem.h
+    platform/filesystem.cpp)
 
 set(ANDROID_FILES
     platform/android/android_window.h
@@ -72,6 +73,10 @@ set(WINDOWS_FILES
 set(SDL_FILES
     platform/sdl_window.h
     platform/sdl_window.cpp)
+
+set(GLFW_FILES
+    platform/glfw_window.h
+    platform/glfw_window.cpp)
 
 set(OPENGL_H
     platform/opengl/opengl_buffer.h
@@ -90,13 +95,10 @@ set(OPENGL_SRC
 set(OPENGL_FILES ${OPENGL_H} ${OPENGL_SRC})
 
 set(GLES_FILES
-    # header
     platform/gles/gles_renderer_api.h
-    # source
     platform/gles/gles_renderer_api.cpp)
 
 set(VULKAN_FILES
-    # header
     platform/vulkan/vulkan_buffer.h
     platform/vulkan/vulkan_renderer_api.h)
 
@@ -134,6 +136,7 @@ if(WIN32)
 endif()
 
 list(APPEND PROJECT_FILES ${SDL_FILES})
+list(APPEND PROJECT_FILES ${GLFW_FILES})
 
 if(ENGINE_RENDER_API STREQUAL "OpenGL")
     list(APPEND PROJECT_FILES ${OPENGL_FILES})
@@ -153,12 +156,13 @@ target_include_directories(engine PUBLIC
     ${CMAKE_SOURCE_DIR}/extern/glm
     ${CMAKE_CURRENT_SOURCE_DIR})
 
-target_link_libraries(engine spdlog glad stb)
+target_link_libraries(engine spdlog glad stb glfw)
 
 # https://gitlab.kitware.com/cmake/cmake/merge_requests/3553
 target_precompile_headers(engine
     PRIVATE
         [["core/logger.h"]]
+        [["platform/filesystem.h"]]
         <string>
         <fstream>
         <iostream>
@@ -167,6 +171,7 @@ target_precompile_headers(engine
         <vector>
         <algorithm>
         <functional>
+        <filesystem>
         <unordered_map>
 )
 

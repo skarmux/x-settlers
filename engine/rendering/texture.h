@@ -1,11 +1,25 @@
-#pragma once
+﻿#pragma once
 
 class Texture
 {
 public:
+	enum class Format { RED = 1, RG = 2, RGB = 3, RGBA = 4 };
+	enum class Type { FLOAT, BYTE, UNSIGNED_BYTE, SHORT, INT, UNSIGNED_INT };
+	enum class Wrap { CLAMP, REPEAT };
+	enum class Filter { NEAREST, LINEAR };
+public:
 	virtual ~Texture() = default;
 
-	virtual void push_data(void* data, size_t size) = 0;
+	virtual void push_data(uint8_t* data,
+		uint32_t width, uint32_t height, 
+		Texture::Format comp, Texture::Type type) = 0;
+
+	virtual void push_data(uint8_t* data, 
+		uint32_t x, uint32_t y, 
+		uint32_t width, uint32_t height, 
+		Texture::Format comp, Texture::Type type) = 0;
+
+	virtual void generate_mipmaps() = 0;
 
 	virtual void bind(uint32_t slot = 0) const = 0;
 };
@@ -13,26 +27,17 @@ public:
 class Texture2D : public Texture
 {
 public:
-	virtual uint32_t get_width() const = 0;
-	virtual uint32_t get_height() const = 0;
+	virtual uint32_t width() const = 0;
+	virtual uint32_t height() const = 0;
 
-	static std::shared_ptr<Texture2D> create(uint32_t width, uint32_t height);
-	static std::shared_ptr<Texture2D> create(const std::string& path);
+	virtual void set_filter(Filter filter) = 0;
+	virtual void set_wrapping(Wrap wrap) = 0;
+
+	static std::shared_ptr<Texture2D> create(const std::string& path, 
+		Texture::Format comp = Texture::Format::RGBA,
+		Texture::Type type = Texture::Type::UNSIGNED_BYTE);
+
+	static std::shared_ptr<Texture2D> create(uint32_t width, uint32_t height, 
+		Texture::Format comp = Texture::Format::RGBA,
+		Texture::Type type = Texture::Type::UNSIGNED_BYTE);
 };
-
-class Texture3D : public Texture
-{
-public:
-	virtual uint32_t get_width() const = 0;
-	virtual uint32_t get_height() const = 0;
-	virtual uint32_t get_depth() const = 0;
-
-	static std::shared_ptr<Texture3D> create(uint32_t width, uint32_t height, uint32_t depth, uint32_t channels, uint32_t bit_depth);
-	static std::shared_ptr<Texture3D> create(const std::vector<std::string>& paths);
-};
-
-//class BufferTexture : public Texture
-//{
-//public:
-//	static std::shared_ptr<BufferTexture> create(uint32_t size);
-//};

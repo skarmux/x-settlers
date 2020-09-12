@@ -15,7 +15,7 @@ static GLenum ShaderTypeFromString(const std::string& type)
 
 OpenGLShader::OpenGLShader(const std::string& filepath)
 {
-	std::string source = read_file(filepath);
+	std::string source = load_file(filepath);
 	RENDERER_INFO("Building shader from source: {0}", filepath);
 	auto shaderSources = pre_process(source);
 	compile(shaderSources);
@@ -44,7 +44,7 @@ OpenGLShader::~OpenGLShader()
 }
 
 // TODO: Move this utility function to Core/FileIO.h
-std::string OpenGLShader::read_file(const std::string& filepath)
+std::string OpenGLShader::load_file(const std::string& filepath)
 {
 	std::string result;
 	std::ifstream in(filepath, std::ios::in | std::ios::binary);

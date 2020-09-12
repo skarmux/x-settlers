@@ -2,39 +2,37 @@
 #include "rendering/renderer_2d.h"
 
 #include "platform/opengl/opengl_texture.h"
+#include "platform/filesystem.h"
 
-std::shared_ptr<Texture2D> Texture2D::create(uint32_t width, uint32_t height)
+std::shared_ptr<Texture2D> Texture2D::create(uint32_t width, uint32_t height, Texture::Format comp, Texture::Type type)
 {
-	switch (Renderer2D::get_api())
-	{
-	case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLTexture2D>(width, height);
-	default: return nullptr;
+	std::shared_ptr<Texture2D> texture = nullptr;
+
+	switch (Renderer2D::get_api()) {
+	case RendererAPI::API::OpenGL: 
+		texture = std::make_shared<OpenGLTexture2D>(width, height, comp, type); break;
 	}
+
+	return texture;
 }
 
-std::shared_ptr<Texture2D> Texture2D::create(const std::string& path)
+std::shared_ptr<Texture2D> Texture2D::create(const std::string& path, Texture::Format comp, Texture::Type type)
 {
-	switch (Renderer2D::get_api())
-	{ 
-	case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLTexture2D>(path);
-	default: return nullptr;
-	}
-}
+	std::shared_ptr<Texture2D> texture = nullptr;
 
-std::shared_ptr<Texture3D> Texture3D::create(uint32_t width, uint32_t height, uint32_t depth, uint32_t channels, uint32_t bit_depth)
-{
-	switch (Renderer2D::get_api())
-	{
-	case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLTexture3D>(width, height, depth, channels, bit_depth);
-	default: return nullptr;
-	}
-}
+	uint32_t width, height, channels;
+	uint8_t* data_ptr = Filesystem::image_load(path.c_str(), &width, &height, &channels, static_cast<uint32_t>(comp));
 
-std::shared_ptr<Texture3D> Texture3D::create(const std::vector<std::string>& paths)
-{
-	switch (Renderer2D::get_api())
-	{
-	case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLTexture3D>(paths);
-	default: return nullptr;
+	switch (Renderer2D::get_api()) {
+	case RendererAPI::API::OpenGL:
+		texture = std::make_shared<OpenGLTexture2D>(width, height, comp, type); break;
+	default:
+		return texture;
 	}
+
+	texture->push_data(data_ptr, width, height, comp, type);
+
+	Filesystem::image_free(data_ptr);
+
+	return texture;
 }

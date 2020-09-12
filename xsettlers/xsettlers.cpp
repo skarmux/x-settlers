@@ -3,16 +3,36 @@
 
 #include "layer/terrain_layer.h"
 
-const uint32_t WIN_WIDTH = 1280;
-const uint32_t WIN_HEIGHT = 720;
+const uint32_t WIDTH = 1280, HEIGHT = 720;
 
 class XSettlers : public Application
 {
 public:
 	XSettlers() : 
-		Application("X-Settlers", WIN_WIDTH, WIN_HEIGHT)
+		Application("X-Settlers", WIDTH, HEIGHT)
 	{
-		push_layer(new TerrainLayer(WIN_WIDTH, WIN_HEIGHT));
+		MapLoader::init();
+
+		std::vector<MapInfo>& maps = MapLoader::map_list();
+		for (MapInfo map_info : maps) {
+			LOGIC_INFO("loaded map {0}:\n\twidth: {1}, is campaign: {2}, players: {3}, resources: {4}",
+				map_info.path,
+				map_info.size,
+				map_info.is_campaign,
+				map_info.player_count,
+				map_info.resource_preset
+			);
+		}
+
+		MapInfo map_metadata = maps[2]; // select first map from selection
+
+		MapNode* const nodes = new MapNode[(uint64_t)map_metadata.size * (uint64_t)map_metadata.size];
+
+		MapLoader::load_map_area(2, nodes);
+
+		push_layer(new TerrainLayer(WIDTH, HEIGHT, nodes, map_metadata.size));
+
+		delete[] nodes;
 	}
 
 	~XSettlers() {}

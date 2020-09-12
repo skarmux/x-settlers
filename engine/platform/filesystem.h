@@ -1,19 +1,17 @@
 #pragma once
 
-static std::vector<uint8_t> read_file(const std::string& filepath) {
-	std::ifstream file(filepath, std::ios::ate | std::ios::binary);
+#include <vector>
+#include <string>
+#include <fstream>
 
-	if (!file.is_open()) {
-		throw std::runtime_error("failed to open file!");
-	}
+class Filesystem
+{
+public:
+	static void init();
 
-	size_t fileSize = (size_t)file.tellg();
-	std::vector<uint8_t> buffer(fileSize);
-
-	file.seekg(0);
-	file.read((char*)buffer.data(), fileSize);
-
-	file.close();
-
-	return buffer;
-}
+	static std::vector<char> load_file(const std::string& filepath);
+	static uint8_t* image_load(const std::string& filepath, 
+		uint32_t* width, uint32_t* height, uint32_t* channels, uint32_t forced_channels);
+	static void image_free(uint8_t* image);
+	static void write_png(const std::string& path, uint32_t width, uint32_t height, uint32_t channels, uint8_t* data);
+};

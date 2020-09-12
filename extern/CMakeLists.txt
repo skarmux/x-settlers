@@ -29,14 +29,18 @@ if(ANDROID)
     set(NATIVE_APP_GLUE_DIR "${CMAKE_ANDROID_NDK}/sources/android/native_app_glue")
 
     file(GLOB NATIVE_APP_GLUE_FILES "${NATIVE_APP_GLUE_DIR}/*.c" "${NATIVE_APP_GLUE_DIR}/*.h")
-    
+
     add_library(native_app_glue STATIC ${NATIVE_APP_GLUE_FILES})
-        
+
     target_include_directories(native_app_glue PUBLIC ${NATIVE_APP_GLUE_DIR})
-    
+
     set_property(TARGET native_app_glue PROPERTY FOLDER "extern")
 endif()
 
 # spdlog
 add_subdirectory(spdlog)
 set_property(TARGET spdlog PROPERTY FOLDER "extern")
+
+# glfw
+add_subdirectory(glfw)
+set_property(TARGET glfw PROPERTY FOLDER "extern")

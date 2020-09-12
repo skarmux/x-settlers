@@ -6,6 +6,8 @@
 #include "core/time_delta.h"
 #include "core/window.h"
 
+#include "platform/filesystem.h"
+
 #include "rendering/renderer_2d.h"
 #include "rendering/render_command.h"
 #include "rendering/shader.h"

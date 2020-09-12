@@ -8,6 +8,7 @@ extern Application* create_application();
 int main(int argc, char** argv)
 {
 	Logger::init();
+	Filesystem::init();
 
 	auto application = create_application();
 

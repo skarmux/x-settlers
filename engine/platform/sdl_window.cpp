@@ -59,7 +59,7 @@ SDLWindow::SDLWindow(const WindowProps& props)
 	// create OpenGL context and make it current
 	SDL_GL_MakeCurrent(m_window, m_context);
 
-	set_vsync(true); // default setting
+	set_vsync(false); // default setting
 }
 
 SDLWindow::~SDLWindow()
@@ -157,14 +157,10 @@ void SDLWindow::on_update()
 
 void SDLWindow::set_vsync(bool enabled)
 {
-	if (enabled) {
-		//m_context->set_swap_interval(1);
+	if (enabled)
 		SDL_GL_SetSwapInterval(1);
-	}	
-	else {
-		//m_context->set_swap_interval(0);
+	else
 		SDL_GL_SetSwapInterval(0);
-	}
 
 	m_vsync_enabled = enabled;
 }

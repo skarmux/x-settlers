@@ -17,7 +17,7 @@ public:
 
 	float get_time() const override { return SDL_GetTicks(); };
 
-	void set_event_callback(const event_callback_func& callback) override { m_event_callback = callback; }
+	void set_event_callback(const EventCallbackFunc& callback) override { m_event_callback = callback; }
 	void set_vsync(bool enabled) override;
 	bool is_vsync_enabled() const override { return m_vsync_enabled; }
 private:
@@ -28,7 +28,7 @@ private:
 	uint32_t m_width, m_height;
 	bool m_vsync_enabled;
 
-	event_callback_func m_event_callback;
+	EventCallbackFunc m_event_callback;
 
 	SDL_Cursor* m_arrow_cursor;
 	SDL_Cursor* m_sizeall_cursor;

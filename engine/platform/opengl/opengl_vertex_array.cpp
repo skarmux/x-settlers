@@ -6,17 +6,17 @@ static GLenum to_opengl_type(ShaderDataType type)
 {
 	switch (type)
 	{
-	case ShaderDataType::Float1:
-	case ShaderDataType::Float2:
-	case ShaderDataType::Float3:
-	case ShaderDataType::Float4:
+	case ShaderDataType::Float:
+	case ShaderDataType::Vec2:
+	case ShaderDataType::Vec3:
+	case ShaderDataType::Vec4:
 	case ShaderDataType::Mat3:
 	case ShaderDataType::Mat4:
 		return GL_FLOAT;
-	case ShaderDataType::Int1:
-	case ShaderDataType::Int2:
-	case ShaderDataType::Int3:
-	case ShaderDataType::Int4:
+	case ShaderDataType::Int:
+	case ShaderDataType::UVec2:
+	case ShaderDataType::UVec3:
+	case ShaderDataType::UVec4:
 		return GL_INT;
 	case ShaderDataType::Bool:
 		return GL_BOOL;
@@ -55,14 +55,14 @@ void OpenGLVertexArray::add_vertex_buffer(const std::shared_ptr<VertexBuffer>& v
 	{
 		switch (element.type)
 		{
-		case ShaderDataType::Float1:
-		case ShaderDataType::Float2:
-		case ShaderDataType::Float3:
-		case ShaderDataType::Float4:
-		case ShaderDataType::Int1:
-		case ShaderDataType::Int2:
-		case ShaderDataType::Int3:
-		case ShaderDataType::Int4:
+		case ShaderDataType::Float:
+		case ShaderDataType::Vec2:
+		case ShaderDataType::Vec3:
+		case ShaderDataType::Vec4:
+		case ShaderDataType::Int:
+		case ShaderDataType::UVec2:
+		case ShaderDataType::UVec3:
+		case ShaderDataType::UVec4:
 		case ShaderDataType::Bool:
 		{
 			glEnableVertexAttribArray(m_vertex_buffer_index);

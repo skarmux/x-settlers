@@ -5,14 +5,35 @@
 #include "logic/map_loader.h"
 #include "rendering/renderer_2d.h"
 
+enum class S3Field
+{
+	Sea0 = 0, Sea1 = 1, Sea2 = 2, Sea3 = 3, 
+	Sea4 = 4, Sea5 = 5, Sea6 = 6, Sea7 = 7,
+
+	Grass = 16, GrassRock = 17, GrassRiver = 19, GrassDesert = 20,
+	GrassSwamp = 21, GrassMud = 23,
+
+	Rock = 32, RockGrass = 33, RockSnow = 35,
+
+	Beach = 48, BeachRiver = 49,
+
+	Desert = 64, DesertGrass = 65, DesertBeach0 = 66, DesertBeach1 = 67,
+
+	Swamp = 80, SwampGrass = 81, SwampRock = 83,
+	
+	River0 = 96, River1 = 97, River2 = 98, River3 = 99,
+	
+	Snow = 128, SnowRock = 129,
+
+	Mud = 144, MudGrass = 145
+};
+
 class TerrainLayer : public Layer
 {
 public:
-	TerrainLayer(uint32_t width, uint32_t height) :
-		Layer(), 
-		m_camera_controller(width, height),
-		m_map_area(nullptr),
-		m_vertex_buffer(nullptr) {}
+	TerrainLayer(uint32_t width, uint32_t height, MapNode* nodes, uint32_t map_size) :
+		Layer(), m_nodes(nodes), m_map_size(map_size),
+		m_camera_controller(width, height) {}
 	~TerrainLayer() = default;
 
 	void on_attach() override;
@@ -21,20 +42,10 @@ public:
 	void on_update(TimeDelta ts) override;
 	void on_event(Event& e) override;
 private:
-	inline glm::vec2 gridpos_to_worldpos(uint32_t x, uint32_t y, uint32_t width) const;
-	glm::vec2* tex_coords_from_types(
-		uint8_t type_0, uint8_t type_1, uint8_t type_2,
-		const glm::ivec2& gridpos_0, const glm::ivec2& gridpos_1, const glm::ivec2& gridpos_2) const;
-private:
-	MapNode* m_map_area;
-	MapInfo m_map_info; // TODO: may be removable
+	MapNode* const m_nodes;
+	uint32_t m_map_size;
+
 	OrthographicCameraController m_camera_controller;
 
-	// Store Vertex Information (TODO: Quadtree)
-	Renderer2D::TriVertex* m_vertex_buffer;
-
-	// Textures
-	TextureAtlas m_atlas;
-	std::shared_ptr<Texture2D> m_atlas_texture;
-	//std::vector<std::shared_ptr<Texture2D>> m_tex_terrain;
+	std::shared_ptr<Texture2D> m_atlas, m_tilemap, m_heightmap;
 };

@@ -8,22 +8,27 @@
 class TextureAtlas
 {
 public:
-	TextureAtlas() : m_width(0), m_height(0) {}
-	void translate_to_atlas_coords(uint32_t tex_id, glm::vec2& tex_coord) const;
+	TextureAtlas(Texture::Format comp) : m_format(comp) {}
+	~TextureAtlas()	{ m_image_spaces.clear(); }
 
-	void add_texture(const std::string& path);
-	void add_texture(uint32_t* data, uint32_t width, uint32_t height);
+	void add_image(const std::string& path);
+	void add_image(uint8_t* data, uint32_t width, uint32_t height, Texture::Format format);
 
-	std::shared_ptr<Texture2D> create_texture(uint32_t width, uint32_t height);
+	glm::uvec2 texel_offset(uint32_t tex_id) const
+	{ 
+		return glm::uvec2(m_image_spaces[tex_id].x, m_image_spaces[tex_id].y); 
+	}
+
+	std::shared_ptr<Texture2D> create_texture(uint32_t max_width, uint32_t max_height);
 private:
 	struct Space
 	{
 		uint32_t x, y;
 		uint32_t width, height;
+		uint8_t* data;
 	};
-	bool insert_texture(std::vector<Space>& free_spaces, Space* texture);
+	bool insert_image(std::vector<Space>& free_spaces, Space* texture);
 private:
-	uint32_t m_width, m_height;
-	std::vector<Space> m_texture_spaces;
-	std::vector<uint32_t*> m_texture_data;
+	Texture::Format m_format;
+	std::vector<Space> m_image_spaces;
 };

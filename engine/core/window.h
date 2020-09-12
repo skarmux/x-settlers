@@ -23,7 +23,7 @@ public:
 	};
 public:
 	// declaring 'event_callback_func' as alias
-	using event_callback_func = std::function<void(Event&)>;
+	using EventCallbackFunc = std::function<void(Event&)>;
 
 	virtual ~Window() {}
 
@@ -35,7 +35,7 @@ public:
 	virtual float get_time() const = 0;
 
 	// Window attributes
-	virtual void set_event_callback(const event_callback_func& callback) = 0;
+	virtual void set_event_callback(const EventCallbackFunc& callback) = 0;
 	virtual void set_vsync(bool enabled) = 0;
 	virtual bool is_vsync_enabled() const = 0;
 

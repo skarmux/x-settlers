@@ -30,7 +30,7 @@ public:
 
 	const std::string& get_name() const override { return m_Name; }
 private:
-	std::string read_file(const std::string& filepath); // TODO move to filesystem module
+	std::string load_file(const std::string& filepath); // TODO move to filesystem module
 	std::unordered_map<GLenum, std::string> pre_process(const std::string& source);
 	void compile(const std::unordered_map<GLenum, std::string>& shaderSources);
 private:

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glm/glm.hpp>
+#include <glm/vec3.hpp>
 
 #include "rendering/orthographic_camera.h"
 
@@ -24,6 +24,10 @@ public:
 	void on_update(TimeDelta ts);
 	void on_event(Event& e);
 
+	uint32_t get_width() const { return m_width; }
+	uint32_t get_height() const { return m_height; }
+	float get_zoom_level() const { return m_zoom_level; }
+	glm::vec3 get_camera_position() const { return m_camera_position; }
 	OrthographicCamera& get_camera() { return m_camera; }
 	const OrthographicCamera& get_camera() const { return m_camera; }
 

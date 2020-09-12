@@ -3,7 +3,7 @@
 #include "events/event.h"
 
 enum class MouseButton {
-	Left, Middle, Right
+	Left = 0, Right = 1, Middle = 2
 };
 
 class MouseScrolledEvent : public Event

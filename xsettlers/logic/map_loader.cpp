@@ -1,8 +1,9 @@
 #include "logic/map_loader.h"
 #include "platform/filesystem.h"
 
-#include <filesystem>
 #include <engine.h>
+
+#include <filesystem>
 
 static const std::string MAPS_PATH = "assets/maps/s3";
 
@@ -31,7 +32,7 @@ void MapLoader::shutdown()
 
 void MapLoader::index_map_file(const std::string& path)
 {
-	std::vector<uint8_t> map_file = read_file(path);
+	std::vector<char> map_file = Filesystem::load_file(path);
 
 	MapInfo map_info{};
 	map_info.path = path;
@@ -39,7 +40,7 @@ void MapLoader::index_map_file(const std::string& path)
 	// TODO: Not necessary to instantiate PartHeader vector with maximum size
 	// as many part types aren't present with plenty of maps
 
-	uint8_t* buffer = map_file.data() + 8; // first partition starts at 8th byte
+	char* buffer = map_file.data() + 8; // first partition starts at 8th byte
 
 	PartHeader part_header{};
 
@@ -48,7 +49,7 @@ void MapLoader::index_map_file(const std::string& path)
 		memcpy(&part_header.type, buffer, sizeof(uint32_t));
 		memcpy(&part_header.data_size, buffer + 4, sizeof(uint32_t));
 		buffer += 8;
-		part_header.data_offset = buffer - (uint8_t*)map_file.data();
+		part_header.data_offset = buffer - map_file.data();
 
 		// decrypt partition header
 		part_header.type   &= 0x0000FFFF;
@@ -86,15 +87,15 @@ void MapLoader::index_map_file(const std::string& path)
 	s_data.map_infos.push_back(map_info);
 }
 
-std::vector<MapInfo> MapLoader::get_map_list()
+std::vector<MapInfo> MapLoader::map_list()
 {
 	// TODO: Singleton shouldn't have any getter
 	return s_data.map_infos;
 }
 
-void MapLoader::decrypt_partition(std::vector<uint8_t>& map_file, const PartHeader& part_header)
+void MapLoader::decrypt_partition(std::vector<char>& map_file, const PartHeader& part_header)
 {
-	uint8_t* buffer = map_file.data();
+	char* buffer = map_file.data();
 	buffer += part_header.data_offset;
 
 	char key = part_header.type & 0xFF;
@@ -115,11 +116,11 @@ void MapLoader::load_map_area(uint32_t map_index, MapNode* area)
 	const MapInfo& map_info = s_data.map_infos[map_index];
 	const PartHeader& area_part_header = map_info.parts[static_cast<uint32_t>(PartType::Area)];
 
-	std::vector<uint8_t> map_file = read_file(map_info.path);
+	std::vector<char> map_file = Filesystem::load_file(map_info.path);
 
 	decrypt_partition(map_file, area_part_header);
 
-	uint8_t* buffer = map_file.data();
+	char* buffer = map_file.data();
 	buffer += area_part_header.data_offset;
 	buffer += 4; // skip size value (4 Byte) that is already known
 

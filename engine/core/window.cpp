@@ -6,6 +6,7 @@ Window::PLATFORM Window::s_Platform = Window::PLATFORM::Android;
 
 #elif WIN32
 #include "platform/sdl_window.h"
+#include "platform/glfw_window.h"
 #include "platform/windows/windows_window.h"
 Window::Platform Window::s_platform = Window::Platform::Windows;
 
@@ -20,11 +21,12 @@ std::unique_ptr<Window> Window::create(const WindowProps& props)
 	{
 	case Window::Platform::Windows:
 		return std::make_unique<SDLWindow>(props);
+		//return std::make_unique<GLFWWindow>(props);
 		//return std::make_unique<WindowsWindow>(props);
 
 	case Window::Platform::Linux:
 		return std::make_unique<SDLWindow>(props);
-		break;
+
 	case Window::Platform::MacOS:
 		CORE_ERROR("Platform MacOS is not yet supported!");
 		return nullptr;
