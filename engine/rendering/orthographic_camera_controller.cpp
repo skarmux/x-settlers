@@ -55,7 +55,7 @@ bool OrthographicCameraController::on_mouse_scrolled(MouseScrolledEvent& e)
 		m_zoom_level *= 2.0f;
 	
 	m_zoom_level = std::max(m_zoom_level, MIN_ZOOM_LEVEL);
-	m_zoom_level = std::min(m_zoom_level, MAX_ZOOM_LEVEL);
+	//m_zoom_level = std::min(m_zoom_level, MAX_ZOOM_LEVEL);
 	
 	m_camera.set_projection(
 		-((float)m_width / 2.0f) * m_zoom_level,   // left
