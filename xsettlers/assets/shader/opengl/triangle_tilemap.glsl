@@ -61,12 +61,10 @@ void main()
 		cell_UV.x += (1.0 - cell_UV.y) * 0.5;
 
 	// texture bleed prevention
-	// TODO: causes two vertical lines in triangle center when zoomed in
-	// if(cell_UV.x > 0.5) {
-	// 	cell_UV.x -= 1.0 / (tile_size.x * 2.0);
-	// } else {
-	// 	cell_UV.x += 1.0 / (tile_size.x * 2.0);
-	// }
+	float inwards_factor = 1.0 / (tile_size.x * 1.3);
+	float new_range = 1.0 - (2 * inwards_factor);
+	cell_UV.x = (cell_UV.x * new_range) + inwards_factor;
+	cell_UV.y = (cell_UV.y * new_range) + inwards_factor;
 
 	vec2 atlas_UV = (cell_UV / atlas_size.x) * tile_size;
 
