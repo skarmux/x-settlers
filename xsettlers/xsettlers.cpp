@@ -24,11 +24,13 @@ public:
 			);
 		}
 
-		MapInfo map_metadata = maps[2]; // select first map from selection
+		uint32_t selected_map = 0;
+
+		MapInfo map_metadata = maps[selected_map]; // select first map from selection
 
 		MapNode* const nodes = new MapNode[(uint64_t)map_metadata.size * (uint64_t)map_metadata.size];
 
-		MapLoader::load_map_area(2, nodes);
+		MapLoader::load_map_area(selected_map, nodes);
 
 		push_layer(new TerrainLayer(WIDTH, HEIGHT, nodes, map_metadata.size));
 

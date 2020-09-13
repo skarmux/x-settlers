@@ -5,29 +5,6 @@
 #include "logic/map_loader.h"
 #include "rendering/renderer_2d.h"
 
-enum class S3Field
-{
-	Sea0 = 0, Sea1 = 1, Sea2 = 2, Sea3 = 3, 
-	Sea4 = 4, Sea5 = 5, Sea6 = 6, Sea7 = 7,
-
-	Grass = 16, GrassRock = 17, GrassRiver = 19, GrassDesert = 20,
-	GrassSwamp = 21, GrassMud = 23,
-
-	Rock = 32, RockGrass = 33, RockSnow = 35,
-
-	Beach = 48, BeachRiver = 49,
-
-	Desert = 64, DesertGrass = 65, DesertBeach0 = 66, DesertBeach1 = 67,
-
-	Swamp = 80, SwampGrass = 81, SwampRock = 83,
-	
-	River0 = 96, River1 = 97, River2 = 98, River3 = 99,
-	
-	Snow = 128, SnowRock = 129,
-
-	Mud = 144, MudGrass = 145
-};
-
 class TerrainLayer : public Layer
 {
 public:
